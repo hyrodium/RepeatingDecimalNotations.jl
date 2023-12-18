@@ -34,4 +34,6 @@ julia> float(rd"123.45(67)")
 - Add support for negative numbers
 - Add support for `Int128` and `BigInt`
 - Add support for other notations such as `123.45 67...` (See [Repeating decimal](https://en.wikipedia.org/wiki/Repeating_decimal))
+- Add more docs
+- Add tests
 - Register this package
