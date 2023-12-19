@@ -11,19 +11,19 @@ struct ParenthesesNotation <: RepeatingDecimalNotation end
 
 struct RepeatingDecimal{T<:Integer}
     sign::Bool  # sign
-    int::T  # Integer part
-    dec::T  # decimal part
-    rep::T  # repeating part
-    m::T  # digits of decimal part
-    n::T  # digits of repeating part
+    int::BigInt  # Integer part
+    dec::BigInt  # decimal part
+    rep::BigInt  # repeating part
+    m::Int  # digits of decimal part
+    n::Int  # digits of repeating part
 end
 
 function RepeatingDecimal(r::Rational)
-    int = floor(Int, r)
+    int = big(floor(Int, r))
     frac = r - int
     cof = 1//1
-    num = frac.num
-    den = frac.den
+    num = big(frac.num)
+    den = big(frac.den)
     while true
         if rem(den,10) == 0
             den = den ÷ 10
@@ -45,9 +45,13 @@ function RepeatingDecimal(r::Rational)
         rem(den,2) ≠ 0 && rem(den,5) ≠ 0 && break
     end
     m = Int(log10(inv(cof)))
-    n = findfirst(n->rem(10^n-1, den)==0, 1:10)
-    num *= div(10^n-1, den)
-    den *= div(10^n-1, den)
+    n = 1
+    while true
+        rem(big(10)^n-1, den)==0 && break
+        n = n+1
+    end
+    num *= div(big(10)^n-1, den)
+    den *= div(big(10)^n-1, den)
     dec, rep = divrem(num,den)
     return RepeatingDecimal(true, int, dec, rep, m, n)
 end
