@@ -26,4 +26,5 @@ end
     @test repeating_decimal_notation(RepeatingDecimal(rd"123.101(0500)")) == "123.101(0500)"
     @test repeating_decimal_notation(RepeatingDecimal(rd"123.(123123)")) == "123.(123)"
     @test repeating_decimal_notation(RepeatingDecimal(rd".(123123)")) == "0.(123)"
+    @test repeating_decimal_notation(RepeatingDecimal(1//97)) == "0.(010309278350515463917525773195876288659793814432989690721649484536082474226804123711340206185567)"
 end
