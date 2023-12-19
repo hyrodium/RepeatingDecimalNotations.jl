@@ -54,6 +54,7 @@ end
 
 # Defaults to `ParenthesesNotation`
 repeating_decimal_notation(rd::RepeatingDecimal) = repeating_decimal_notation(ParenthesesNotation(), rd)
+repeating_decimal_notation(r::Union{Integer, Rational}) = repeating_decimal_notation(RepeatingDecimal(r))
 
 function repeating_decimal_notation(::ParenthesesNotation, rd::RepeatingDecimal)
     int = rd.int
