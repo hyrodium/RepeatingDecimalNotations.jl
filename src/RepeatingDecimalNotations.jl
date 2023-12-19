@@ -9,7 +9,7 @@ abstract type RepeatingDecimalNotation end
 
 struct ParenthesesNotation <: RepeatingDecimalNotation end
 
-struct RepeatingDecimal{T<:Integer}
+struct RepeatingDecimal
     sign::Bool  # sign
     int::BigInt  # Integer part
     dec::BigInt  # decimal part
