@@ -5,29 +5,23 @@ This package exports one string macro `@rd_str` that converts repeating decimal 
 ```julia
 julia> using RepeatingDecimalNotations
 
-julia> rd"123"
-123
+julia> r = rd"123.4(56)"  # Notation to represent 123.4565656...
+61111//495
 
-julia> rd"123.45"
-2469//20
+julia> float(r)  # Check floating point number approximation
+123.45656565656566
 
-julia> rd"123.45(6)"
-37037//300
+julia> repeating_decimal_notation(r)  # Generate string from `Rational`.
+"123.4(56)"
 
-julia> rd"123.45(67)"
-611111//4950
+julia> rd"0.(9)"  # Notation to represent 0.999...
+1//1
 
-julia> float(rd"123")
-123.0
+julia> rd"1.0"
+1//1
 
-julia> float(rd"123.45")
-123.45
-
-julia> float(rd"123.45(6)")
-123.45666666666666
-
-julia> float(rd"123.45(67)")
-123.45676767676768
+julia> rd"0.9(999)"
+1//1
 ```
 
 # TODO
