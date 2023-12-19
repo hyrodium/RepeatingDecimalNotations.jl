@@ -1,6 +1,6 @@
 # RepeatingDecimalNotations.jl
 
-This package exports one string macro `@rd_str` that converts repeating decimal numbers to rational numbers.
+A Julia package to handle repeating decimal numbers.
 
 ```julia
 julia> using RepeatingDecimalNotations
@@ -27,7 +27,7 @@ julia> rd"0.9(999)"
 # TODO
 - Add support for negative numbers
 - Add support for `Int128` and `BigInt`
-- Add support for other notations such as `123.45 67...` (See [Repeating decimal](https://en.wikipedia.org/wiki/Repeating_decimal))
+- Add support for other notations such as `123.45 67...` (See [Repeating decimal (Wikipedia)](https://en.wikipedia.org/wiki/Repeating_decimal))
 - Add more docs
-- Add tests
+- Add more tests
 - Register this package
