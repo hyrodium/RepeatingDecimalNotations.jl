@@ -1,6 +1,76 @@
 module RepeatingDecimalNotations
 
 export @rd_str
+export repeating_decimal_notation
+export ParenthesesNotation
+export RepeatingDecimal
+
+abstract type RepeatingDecimalNotation end
+
+struct ParenthesesNotation <: RepeatingDecimalNotation end
+
+struct RepeatingDecimal{T<:Integer}
+    sign::Bool  # sign
+    int::T  # Integer part
+    dec::T  # decimal part
+    rep::T  # repeating part
+    m::T  # digits of decimal part
+    n::T  # digits of repeating part
+end
+
+function RepeatingDecimal(r::Rational)
+    int = floor(Int, r)
+    frac = r - int
+    cof = 1//1
+    num = frac.num
+    den = frac.den
+    while true
+        if rem(den,10) == 0
+            den = den ÷ 10
+            cof //= 10
+        end
+        rem(den,10) ≠ 0 && break
+    end
+    while true
+        if rem(den,5) == 0
+            num *= 2
+            den ÷= 5
+            cof //= 10
+        end
+        if rem(den,2) == 0
+            num *= 5
+            den ÷= 2
+            cof //= 10
+        end
+        rem(den,2) ≠ 0 && rem(den,5) ≠ 0 && break
+    end
+    m = Int(log10(inv(cof)))
+    n = findfirst(n->rem(10^n-1, den)==0, 1:10)
+    num *= div(10^n-1, den)
+    den *= div(10^n-1, den)
+    dec, rep = divrem(num,den)
+    return RepeatingDecimal(true, int, dec, rep, m, n)
+end
+
+# Defaults to `ParenthesesNotation`
+repeating_decimal_notation(rd::RepeatingDecimal) = repeating_decimal_notation(ParenthesesNotation(), rd)
+
+function repeating_decimal_notation(::ParenthesesNotation, rd::RepeatingDecimal)
+    int = rd.int
+    dec = rd.dec
+    rep = rd.rep
+    m = rd.m
+    n = rd.n
+    int_str = string(int)
+    if dec == 0 && m == 0
+        dec_str = ""
+    else
+        dec_str = lpad(string(dec), m, '0')
+    end
+    rep_str = lpad(string(rep), n, '0')
+
+    "$int_str.$dec_str($rep_str)"
+end
 
 macro rd_str(str)
     str = replace(str, r"(\d)_(\d)" => s"\1\2")
