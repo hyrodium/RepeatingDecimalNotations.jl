@@ -1,3 +1,5 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+DocumenterMermaid = "a078cd44-4d9c-4618-b545-3ab9d77f9177"
+InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 RepeatingDecimalNotations = "fbb887af-2519-40af-8dc5-25186fd85022"
