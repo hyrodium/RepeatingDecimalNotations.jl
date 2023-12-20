@@ -57,7 +57,7 @@ subtypes(RepeatingDecimalNotation)
 ### `ParenthesesNotation` (Default)
 ``123.45(678)`` (`"123.45(678)"`)
 
-```@repl
+```@repl design
 no = ParenthesesNotation()
 stringify(no, 1//11)
 rationalify(no, "123.45(678)")
