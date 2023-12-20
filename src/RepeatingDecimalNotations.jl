@@ -6,6 +6,11 @@ export RepeatingDecimal
 
 abstract type RepeatingDecimalNotation end
 
+"""
+    RepeatingDecimal
+
+Intermediate struct to represent a repeating decimal number.
+"""
 struct RepeatingDecimal
     sign::Bool  # true/false corresponds to +/-
     integer_part::BigInt    # Integer part
