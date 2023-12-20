@@ -57,6 +57,14 @@ subtypes(RepeatingDecimalNotation)
 ### `ParenthesesNotation` (Default)
 ``123.45(678)`` (`"123.45(678)"`)
 
+```@repl
+no = ParenthesesNotation()
+stringify(no, 1//11)
+rationalify(no, "123.45(678)")
+stringify(no, RepeatingDecimal(1//11))  # longer version
+rationalify(RepeatingDecimal(no, "123.45(678)"))  # longer version
+```
+
 ### `DotsNotation`
 ``123.45\dot{6}7\dot{8}`` (`"123.456̇78̇"`)
 
