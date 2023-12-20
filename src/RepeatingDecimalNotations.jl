@@ -1,6 +1,7 @@
 module RepeatingDecimalNotations
 
 export @rd_str
+export RepeatingDecimalNotation
 export ParenthesesNotation
 export RepeatingDecimal
 
