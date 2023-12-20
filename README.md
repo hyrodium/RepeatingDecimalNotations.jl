@@ -35,6 +35,4 @@ julia> rationalify("0.24(666)")
 
 # TODO
 - Add support for other notations such as `123.45 67...` (See [Repeating decimal (Wikipedia)](https://en.wikipedia.org/wiki/Repeating_decimal))
-- Add more docs
-- Add more tests
 - Register this package
