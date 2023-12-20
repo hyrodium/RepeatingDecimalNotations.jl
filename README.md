@@ -25,7 +25,6 @@ julia> rd"0.99(9)"  # The notation of repeating decimals is not unique.
 
 # TODO
 - Add support for negative numbers
-- Add support for `Int128` and `BigInt`
 - Add support for other notations such as `123.45 67...` (See [Repeating decimal (Wikipedia)](https://en.wikipedia.org/wiki/Repeating_decimal))
 - Add more docs
 - Add more tests
