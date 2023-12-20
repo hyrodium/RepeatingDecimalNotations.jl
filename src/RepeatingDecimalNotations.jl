@@ -1,16 +1,13 @@
 module RepeatingDecimalNotations
 
 export @rd_str
-export repeating_decimal_notation
 export ParenthesesNotation
 export RepeatingDecimal
 
 abstract type RepeatingDecimalNotation end
 
-struct ParenthesesNotation <: RepeatingDecimalNotation end
-
 struct RepeatingDecimal
-    sign::Bool  # true/false corresponds +/-
+    sign::Bool  # true/false corresponds to +/-
     integer_part::BigInt    # Integer part
     finite_part::BigInt     # Finite decimal part
     repeating_part::BigInt  # Repeating decimal part, easily overflows in Int64. (e.g. 1//97)
@@ -53,87 +50,54 @@ function RepeatingDecimal(r::Rational)
     num *= div(big(10)^n-1, den)
     den *= div(big(10)^n-1, den)
     dec, rep = divrem(num,den)
+    if rep == 0
+        n = 0
+    end
     return RepeatingDecimal(true, int, dec, rep, m, n)
 end
 
 # Defaults to `ParenthesesNotation`
-repeating_decimal_notation(rd::RepeatingDecimal) = repeating_decimal_notation(ParenthesesNotation(), rd)
-repeating_decimal_notation(r::Union{Integer, Rational}) = repeating_decimal_notation(RepeatingDecimal(r))
+stringify(rd::RepeatingDecimal) = stringify(ParenthesesNotation(), rd)
+stringify(r::Union{Integer, Rational}) = stringify(RepeatingDecimal(r))
+stringify(rdn::RepeatingDecimalNotation, rd::RepeatingDecimal) = stringify(rdn, rd)
+stringify(rdn::RepeatingDecimalNotation, r::Union{Integer, Rational}) = stringify(rdn, RepeatingDecimal(r))
 
-function repeating_decimal_notation(::ParenthesesNotation, rd::RepeatingDecimal)
-    int = rd.integer_part
-    dec = rd.finite_part
-    rep = rd.repeating_part
-    m = rd.m
-    n = rd.n
-    int_str = string(int)
-    if dec == 0 && m == 0
-        dec_str = ""
-    else
-        dec_str = lpad(string(dec), m, '0')
-    end
-    rep_str = lpad(string(rep), n, '0')
-
-    "$int_str.$dec_str($rep_str)"
+function _remove_underscore(str::AbstractString)
+    str = replace(str, r"(\d)_(\d)" => s"\1\2")
+    str = replace(str, r"(\d)_(\d)" => s"\1\2")
+    return str
 end
+
+include("_ParenthesesNotation.jl")
 
 macro rd_str(str)
-    str = replace(str, r"(\d)_(\d)" => s"\1\2")
-    str = replace(str, r"(\d)_(\d)" => s"\1\2")
-    if !isnothing(match(r"^\d+$", str))
-        # "123"
-        integer_part = str
-        num = parse(Int, integer_part)
-        return num
-    elseif !isnothing(match(r"^\d*\.\d+$", str))
-        # "123.45"
-        dot_index = findfirst(==('.'), str)
-        integer_part = str[1:dot_index-1]
-        decimal_part = str[dot_index+1:end]
-        return _int_dec_rep(integer_part, decimal_part, "0")
-    elseif !isnothing(match(r"^\d*\.\d+\(\d+\)$", str))
-        # "123.45(678)"
-        dot_index = findfirst(==('.'), str)
-        left_index = findfirst(==('('), str)
-        integer_part = str[1:dot_index-1]
-        decimal_part = str[dot_index+1:left_index-1]
-        repeat_part = str[left_index+1:end-1]
-        return _int_dec_rep(integer_part, decimal_part, repeat_part)
-    elseif !isnothing(match(r"^\d+\.\(\d+\)$", str))
-        # "123.(45)"
-        dot_index = findfirst(==('.'), str)
-        left_index = findfirst(==('('), str)
-        integer_part = str[1:dot_index-1]
-        repeat_part = str[left_index+1:end-1]
-        return _int_rep(integer_part, repeat_part)
-    elseif !isnothing(match(r"^\.\(\d+\)$", str))
-        # ".(45)"
-        repeat_part = str[3:end-1]
-        return _int_rep("0", repeat_part)
-    else
-        error("invalid input!")
+    rd = RepeatingDecimal(ParenthesesNotation(), str)
+    r = rationalify(BigInt, rd)
+    return _try_unpromote_type(r)
+end
+
+function _try_unpromote_type(r::Rational{BigInt})
+    for T in (Int128, Int64, Int)
+        if typemin(T) < r.num < typemax(T) && typemin(T) < r.den < typemax(T)
+            r = Rational{T}(r)
+        end
     end
+    return r
 end
 
-function _int_dec_rep(integer_part::AbstractString, decimal_part::AbstractString, repeat_part::AbstractString)
-    decimal_digits = length(decimal_part)
-    repeat_digits = length(repeat_part)
-    integer_num = parse(Int, integer_part)
-    decimal_num = parse(Int, decimal_part)
-    repeat_num = parse(Int, repeat_part)//(10^repeat_digits-1)
-    num = integer_num
-    num += decimal_num//(10^decimal_digits)
-    num += repeat_num//(10^decimal_digits)
-    return num
+# Defaults to `Int`
+rationalify(str::AbstractString) = rationalify(Int, ParenthesesNotation(), str)
+rationalify(rdn::RepeatingDecimalNotation, str::AbstractString) = rationalify(Int, rdn, str)
+rationalify(rd::RepeatingDecimal) = rationalify(Int, rd)
+function rationalify(T::Type{<:Integer}, rdn::RepeatingDecimalNotation, str::AbstractString)
+    rd = RepeatingDecimal(rdn, str)
+    return rationalify(T, rd)
 end
-
-function _int_rep(integer_part::AbstractString, repeat_part::AbstractString)
-    repeat_digits = length(repeat_part)
-    integer_num = parse(Int, integer_part)
-    repeat_num = parse(Int, repeat_part)//(10^repeat_digits-1)
-    num = integer_num
-    num += repeat_num
-    return num
+function rationalify(T::Type{<:Integer}, rd::RepeatingDecimal)
+    r = rd.integer_part
+    r += rd.finite_part // (10^rd.m)
+    r += rd.repeating_part // (10^rd.n-1) / (10^rd.m)
+    return Rational{T}(r)
 end
 
 end # module RepeatingDecimalNotations
