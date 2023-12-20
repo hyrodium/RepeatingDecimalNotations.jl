@@ -17,7 +17,7 @@ There are three types that represents a repeating decimal number; `String`, `Rat
     * e.g. `"123.45(678)"`, `"123.456(786)"`, `"123.456_786_786(786_786)"`
 * [`RepeatingDecimal`](@ref)
     * The representation is not unique.
-    * e.g. `RepeatingDecimal(123,45,678,2,3)`, `RepeatingDecimal(123,456,786,3,3)`, `RepeatingDecimal(123,456_786_786,786_786,9,6)`
+    * e.g. `RepeatingDecimal(true,123,45,678,2,3)`, `RepeatingDecimal(true,123,456,786,3,3)`, `RepeatingDecimal(true,123,456_786_786,786_786,9,6)`
 
 ## Converting functions: `stringify`, `rationalify`
 
@@ -35,6 +35,17 @@ graph LR
 * These functions are not exported because the names of these functions does not imply relation to repeating decimals Please use them like the following in your code.
     * `RepeatingDecimalNotations.stringify(...)`
     * `import RepeatingDecimalNotations: stringify`
+
+```@repl
+using RepeatingDecimalNotations
+using RepeatingDecimalNotations: stringify, rationalify
+str = "123.45(678)"
+rd = RepeatingDecimal(true,123,45,678,2,3)
+r = 4111111//33300
+str == stringify(rd) == stringify(r)
+rd == RepeatingDecimal(str) == RepeatingDecimal(r)
+r == rationalify(str) == rationalify(rd)
+```
 
 ## Subtypes of `RepeatingDecimalNotation`
 There are several supported notations for repeating decimals.
