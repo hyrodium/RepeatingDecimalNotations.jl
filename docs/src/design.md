@@ -44,22 +44,25 @@ subtypes(RepeatingDecimalNotation)
 ```
 
 ### `ParenthesesNotation` (Default)
-`"123.45(678)"`
+``123.45(678)`` (`"123.45(678)"`)
 
 ### `DotsNotation`
-`"123.456̇78̇"`
+``123.45\dot{6}7\dot{8}`` (`"123.456̇78̇"`)
 
 TODO
 
 ### `ScientificNotation`
-`"123.45r678"`
+``123.45r678`` (`"123.45r678"`)
 
 TODO
 
 ### `EllipsisNotation`
-`"123.45 678..."`
+``123.45678678...`` (`"123.45678678..."`)
 
 TODO
+
+### Non-supported notation
+Vinculum notation ``123.45\overline{678}`` is not supported because it is hard to input with Unicode.
 
 ## About the logo
 
