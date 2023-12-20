@@ -1,5 +1,7 @@
 using Documenter
+using DocumenterMermaid
 using RepeatingDecimalNotations
+using InteractiveUtils
 
 # Setup for doctests in docstrings
 DocMeta.setdocmeta!(RepeatingDecimalNotations, :DocTestSetup, :(using RepeatingDecimalNotations))
@@ -15,6 +17,7 @@ makedocs(;
     ),
     pages = [
         "Home" => "index.md",
+        "Design" => "design.md",
         "API" => "api.md",
     ],
     repo = "https://github.com/hyrodium/RepeatingDecimalNotations.jl/blob/{commit}{path}#L{line}",
