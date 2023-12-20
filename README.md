@@ -26,8 +26,11 @@ julia> stringify(r)  # Generate string from `Rational`.
 julia> rd"0.(9)"  # 0.999... is equal to 1.
 1//1
 
-julia> rd"0.99(9)"  # The notation of repeating decimals is not unique.
-1//1
+julia> rd"0.99(9)", rd"1", rd"1.000_000"  # The notation of repeating decimals is not unique.
+(1//1, 1//1, 1//1)
+
+julia> rationalify("0.24(666)")
+37//150
 ```
 
 # TODO
