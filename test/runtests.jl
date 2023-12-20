@@ -14,6 +14,11 @@ Aqua.test_all(RepeatingDecimalNotations)
     @test rd".(66)"  === 2//3
     @test rd"−1"     === -1//1
     @test rd"-.(09)" === -1//11
+
+    @test rd".45" === rd"0.45"
+    @test rd".45(678)" === rd"0.45(678)"
+    @test rd".(45)" === rd"0.(45)"
+
     @test rd"9223372036854775807" === 9223372036854775807//1 isa Rational{Int64}
     @test rd"9223372036854775808" === 9223372036854775808//1 isa Rational{Int128}
     @test rd"-9223372036854775808" === -9223372036854775808//1 isa Rational{Int64}
