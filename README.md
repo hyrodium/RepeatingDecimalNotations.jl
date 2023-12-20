@@ -5,22 +5,21 @@ A Julia package to handle repeating decimal numbers.
 ```julia
 julia> using RepeatingDecimalNotations
 
-julia> r = rd"123.4(56)"  # Notation to represent 123.4565656...
+julia> using RepeatingDecimalNotations: stringify, rationalify
+
+julia> r = rd"123.4(56)"  # 123.4565656...
 61111//495
 
-julia> float(r)  # Check floating point number approximation
-123.45656565656566
+julia> typeof(r), float(r)  # Check floating point number approximation.
+(Rational{Int64}, 123.45656565656566)
 
-julia> repeating_decimal_notation(r)  # Generate string from `Rational`.
+julia> stringify(r)  # Generate string from `Rational`.
 "123.4(56)"
 
-julia> rd"0.(9)"  # Notation to represent 0.999...
+julia> rd"0.(9)"  # 0.999... is equal to 1.
 1//1
 
-julia> rd"1.0"
-1//1
-
-julia> rd"0.9(999)"
+julia> rd"0.99(9)"  # The notation of repeating decimals is not unique.
 1//1
 ```
 
