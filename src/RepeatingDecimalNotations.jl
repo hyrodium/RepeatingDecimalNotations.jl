@@ -21,6 +21,14 @@ struct RepeatingDecimal
     n::Int  # digits of repeating part
 end
 
+function RepeatingDecimal(sign::Bool, integer_part::Integer, finite_part::Integer, repeating_part::Integer, m::Integer, n::Integer)
+    RepeatingDecimal(sign, BigInt(integer_part), BigInt(finite_part), BigInt(repeating_part), Int(m), Int(n))
+end
+
+function Base.:(==)(rd1::RepeatingDecimal, rd2::RepeatingDecimal)
+    return (rd1.sign == rd2.sign)&(rd1.integer_part == rd2.integer_part)&(rd1.finite_part == rd2.finite_part)&(rd1.repeating_part == rd2.repeating_part)&(rd1.m == rd2.m)&(rd1.n == rd2.n)
+end
+
 function RepeatingDecimal(r::Rational)
     int = big(floor(Int, r))
     frac = r - int
