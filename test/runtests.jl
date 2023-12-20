@@ -3,7 +3,7 @@ using RepeatingDecimalNotations
 import RepeatingDecimalNotations: rationalify, stringify
 
 @testset "@rd_str macro" begin
-    @test rd"1"     === 1//1
+    @test rd"-1"     === -1//1
     @test rd"1.0"   === 1//1
     @test rd"0.(9)" === 1//1
     @test rd"1.(0)" === 1//1

@@ -57,6 +57,8 @@ function RepeatingDecimal(r::Rational)
 end
 
 # Defaults to `ParenthesesNotation`
+RepeatingDecimal(r::Union{Integer, Rational}) = RepeatingDecimal(ParenthesesNotation(), r)
+RepeatingDecimal(str::AbstractString) = RepeatingDecimal(ParenthesesNotation(), str)
 stringify(rd::RepeatingDecimal) = stringify(ParenthesesNotation(), rd)
 stringify(r::Union{Integer, Rational}) = stringify(RepeatingDecimal(r))
 stringify(rdn::RepeatingDecimalNotation, rd::RepeatingDecimal) = stringify(rdn, rd)
@@ -97,7 +99,11 @@ function rationalify(T::Type{<:Integer}, rd::RepeatingDecimal)
     r = rd.integer_part
     r += rd.finite_part // (10^rd.m)
     r += rd.repeating_part // (10^rd.n-1) / (10^rd.m)
-    return Rational{T}(r)
+    if rd.sign
+        return Rational{T}(r)
+    else
+        return -Rational{T}(r)
+    end
 end
 
 end # module RepeatingDecimalNotations
