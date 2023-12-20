@@ -3,13 +3,16 @@ using RepeatingDecimalNotations
 import RepeatingDecimalNotations: rationalify, stringify
 
 @testset "@rd_str macro" begin
+    @test rd"1.0"    === 1//1
+    @test rd"0.(9)"  === 1//1
+    @test rd"1.(0)"  === 1//1
+    @test rd"0.(3)"  === 1//3
+    @test rd".(3)"   === 1//3
+    @test rd".(66)"  === 2//3
     @test rd"-1"     === -1//1
-    @test rd"1.0"   === 1//1
-    @test rd"0.(9)" === 1//1
-    @test rd"1.(0)" === 1//1
-    @test rd"0.(3)" === 1//3
-    @test rd".(3)"  === 1//3
-    @test rd".(33)" === 1//3
+    @test rd"-.(09)" === -1//11
+    @test rd"9223372036854775807" === 9223372036854775807//1 isa Rational{Int64}
+    @test rd"9223372036854775808" === 9223372036854775808//1 isa Rational{Int128}
 end
 
 @testset "stringify" begin
