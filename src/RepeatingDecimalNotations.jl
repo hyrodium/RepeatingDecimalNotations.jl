@@ -10,10 +10,10 @@ abstract type RepeatingDecimalNotation end
 struct ParenthesesNotation <: RepeatingDecimalNotation end
 
 struct RepeatingDecimal
-    sign::Bool  # sign
-    int::BigInt  # Integer part
-    dec::BigInt  # decimal part
-    rep::BigInt  # repeating part
+    sign::Bool  # true/false corresponds +/-
+    integer_part::BigInt    # Integer part
+    finite_part::BigInt     # Finite decimal part
+    repeating_part::BigInt  # Repeating decimal part, easily overflows in Int64. (e.g. 1//97)
     m::Int  # digits of decimal part
     n::Int  # digits of repeating part
 end
@@ -61,9 +61,9 @@ repeating_decimal_notation(rd::RepeatingDecimal) = repeating_decimal_notation(Pa
 repeating_decimal_notation(r::Union{Integer, Rational}) = repeating_decimal_notation(RepeatingDecimal(r))
 
 function repeating_decimal_notation(::ParenthesesNotation, rd::RepeatingDecimal)
-    int = rd.int
-    dec = rd.dec
-    rep = rd.rep
+    int = rd.integer_part
+    dec = rd.finite_part
+    rep = rd.repeating_part
     m = rd.m
     n = rd.n
     int_str = string(int)
