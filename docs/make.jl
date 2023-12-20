@@ -15,6 +15,7 @@ makedocs(;
     ),
     pages = [
         "Home" => "index.md",
+        "API" => "api.md",
     ],
     repo = "https://github.com/hyrodium/RepeatingDecimalNotations.jl/blob/{commit}{path}#L{line}",
     sitename = "RepeatingDecimalNotations.jl",
