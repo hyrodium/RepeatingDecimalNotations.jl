@@ -31,7 +31,7 @@ graph LR
     C -- "stringify" --> A
 ```
 
-* Avoid adding methods to `Base.string` and `Base.rationalize` not to induce type-piracy (Type III).
+* Avoid adding methods to `Base.string` and `Base.rationalize` not to induce Type III piracy.
 * These functions are not exported because the names of these functions does not imply relation to repeating decimals Please use them like the following in your code.
     * `RepeatingDecimalNotations.stringify(...)`
     * `import RepeatingDecimalNotations: stringify`
