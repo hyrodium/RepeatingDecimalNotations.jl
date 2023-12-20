@@ -1,6 +1,9 @@
 using Test
+using Aqua
 using RepeatingDecimalNotations
 import RepeatingDecimalNotations: rationalify, stringify
+
+Aqua.test_all(RepeatingDecimalNotations)
 
 @testset "@rd_str macro" begin
     @test rd"1.0"    === 1//1
