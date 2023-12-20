@@ -1,0 +1,5 @@
+# RepeatingDecimalNotations.jl
+
+```@docs
+RepeatingDecimal
+```
