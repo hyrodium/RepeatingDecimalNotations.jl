@@ -47,7 +47,7 @@ subtypes(RepeatingDecimalNotation)
 `"123.45(678)"`
 
 ### `DotsNotation`
-`"123.45(6̇78̇)"`
+`"123.456̇78̇"`
 
 TODO
 
