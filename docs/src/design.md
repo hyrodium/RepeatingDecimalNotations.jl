@@ -88,7 +88,12 @@ TODO: add support for `"123.456̇78̇"`
 1.2345\text{r}678\text{e}2
 ```
 
-TODO: add support for `"123.45r678"`
+```@repl design
+rd"1.2345r678e2"
+no = ScientificNotation()
+stringify(no, 1//11)
+rationalify(no, "1.2345r678e2")
+```
 
 ### `EllipsisNotation`
 ```math
