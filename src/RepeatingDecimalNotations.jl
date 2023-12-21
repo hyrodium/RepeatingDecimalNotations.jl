@@ -1,9 +1,10 @@
 module RepeatingDecimalNotations
 
 export @rd_str
+export RepeatingDecimal
 export RepeatingDecimalNotation
 export ParenthesesNotation
-export RepeatingDecimal
+export ScientificNotation
 
 abstract type RepeatingDecimalNotation end
 
@@ -30,6 +31,12 @@ function Base.:(==)(rd1::RepeatingDecimal, rd2::RepeatingDecimal)
 end
 
 function RepeatingDecimal(r::Rational)
+    if r < 0
+        sign = false
+        r = -r
+    else
+        sign = true
+    end
     int = big(floor(Int, r))
     frac = r - int
     cof = 1//1
@@ -67,7 +74,7 @@ function RepeatingDecimal(r::Rational)
     if rep == 0
         n = 0
     end
-    return RepeatingDecimal(true, int, dec, rep, m, n)
+    return RepeatingDecimal(sign, int, dec, rep, m, n)
 end
 
 # Defaults to `ParenthesesNotation`
@@ -85,6 +92,7 @@ function _remove_underscore(str::AbstractString)
 end
 
 include("_ParenthesesNotation.jl")
+include("_ScientificNotation.jl")
 
 macro rd_str(str)
     rd = RepeatingDecimal(ParenthesesNotation(), str)
