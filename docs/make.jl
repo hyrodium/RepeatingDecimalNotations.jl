@@ -18,6 +18,7 @@ makedocs(;
     pages = [
         "Home" => "index.md",
         "Design" => "design.md",
+        "Gallery" => "gallery.md",
         "API" => "api.md",
     ],
     repo = "https://github.com/hyrodium/RepeatingDecimalNotations.jl/blob/{commit}{path}#L{line}",
