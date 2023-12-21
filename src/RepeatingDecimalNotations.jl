@@ -15,19 +15,18 @@ Intermediate struct to represent a repeating decimal number.
 """
 struct RepeatingDecimal
     sign::Bool  # true/false corresponds to +/-
-    integer_part::BigInt    # Integer part
     finite_part::BigInt     # Finite decimal part
-    repeating_part::BigInt  # Repeating decimal part, easily overflows in Int64. (e.g. 1//97)
-    m::Int  # digits of decimal part
-    n::Int  # digits of repeating part
+    repeat_part::BigInt  # Repeating decimal part, easily overflows in Int64. (e.g. 1//97)
+    point_position::Int  # digits of decimal part
+    period::Int  # digits of repeating part
 end
 
-function RepeatingDecimal(sign::Bool, integer_part::Integer, finite_part::Integer, repeating_part::Integer, m::Integer, n::Integer)
-    RepeatingDecimal(sign, BigInt(integer_part), BigInt(finite_part), BigInt(repeating_part), Int(m), Int(n))
+function RepeatingDecimal(sign::Bool, finite_part::Integer, repeating_part::Integer, m::Integer, n::Integer)
+    RepeatingDecimal(sign, BigInt(finite_part), BigInt(repeating_part), Int(m), Int(n))
 end
 
 function Base.:(==)(rd1::RepeatingDecimal, rd2::RepeatingDecimal)
-    return (rd1.sign == rd2.sign)&(rd1.integer_part == rd2.integer_part)&(rd1.finite_part == rd2.finite_part)&(rd1.repeating_part == rd2.repeating_part)&(rd1.m == rd2.m)&(rd1.n == rd2.n)
+    return (rd1.sign == rd2.sign)&(rd1.finite_part == rd2.finite_part)&(rd1.repeat_part == rd2.repeat_part)&(rd1.point_position == rd2.point_position)&(rd1.period == rd2.period)
 end
 
 function RepeatingDecimal(r::Rational)
@@ -39,13 +38,13 @@ function RepeatingDecimal(r::Rational)
     end
     int = big(floor(Int, r))
     frac = r - int
-    cof = 1//1
+    pow = 0
     num = big(frac.num)
     den = big(frac.den)
     while true
         if rem(den,10) == 0
             den = den ÷ 10
-            cof //= 10
+            pow += 1
         end
         rem(den,10) ≠ 0 && break
     end
@@ -53,16 +52,15 @@ function RepeatingDecimal(r::Rational)
         if rem(den,5) == 0
             num *= 2
             den ÷= 5
-            cof //= 10
+            pow += 1
         end
         if rem(den,2) == 0
             num *= 5
             den ÷= 2
-            cof //= 10
+            pow += 1
         end
         rem(den,2) ≠ 0 && rem(den,5) ≠ 0 && break
     end
-    m = Int(log10(inv(cof)))
     n = 1
     while true
         rem(big(10)^n-1, den)==0 && break
@@ -74,7 +72,8 @@ function RepeatingDecimal(r::Rational)
     if rep == 0
         n = 0
     end
-    return RepeatingDecimal(sign, int, dec, rep, m, n)
+    finite = int*10^pow + dec
+    return RepeatingDecimal(sign, finite, rep, pow, n)
 end
 
 # Defaults to `ParenthesesNotation`
@@ -118,9 +117,8 @@ function rationalify(T::Type{<:Integer}, rdn::RepeatingDecimalNotation, str::Abs
     return rationalify(T, rd)
 end
 function rationalify(T::Type{<:Integer}, rd::RepeatingDecimal)
-    r = rd.integer_part
-    r += rd.finite_part // (10^rd.m)
-    r += rd.repeating_part // (10^rd.n-1) / (10^rd.m)
+    r = rd.finite_part // (T(10)^rd.point_position)
+    r += rd.repeat_part // (T(10)^rd.period-1) / (T(10)^rd.point_position)
     if rd.sign
         return Rational{T}(r)
     else
