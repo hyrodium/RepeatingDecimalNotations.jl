@@ -49,7 +49,7 @@ graph LR
 using RepeatingDecimalNotations
 using RepeatingDecimalNotations: stringify, rationalify
 str = "123.45(678)"
-rd = RepeatingDecimal(true,123,45,678,2,3)
+rd = RepeatingDecimal(true,12345,678,2,3)
 r = 4111111//33300
 str == stringify(rd) == stringify(r)
 rd == RepeatingDecimal(str) == RepeatingDecimal(r)
