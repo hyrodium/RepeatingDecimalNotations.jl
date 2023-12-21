@@ -43,7 +43,7 @@ function RepeatingDecimal(::EllipsisNotation, str::AbstractString)
     str = _remove_underscore(str)
     m = match(r"^(\-|−?)(\d+)$", str)
     if !isnothing(m)
-        # "-123.4"
+        # "-1234"
         sign_str, integer_str = m.captures
         period = 1
         point_position = 0

@@ -1,7 +1,7 @@
 struct ScientificNotation <: RepeatingDecimalNotation end
 
-function isvalidnotaiton(::ScientificNotation, str::AbstractString)
-    str = _remove_underscore(str)
+function isvalidnotaiton(::ScientificNotation, _str::AbstractString)
+    str = _remove_underscore(_str)
     i = firstindex(str)
     if str[i] == '-' || str[i] == '−'
         str = str[nextind(str, i):end]
@@ -26,6 +26,8 @@ function isvalidnotaiton(::ScientificNotation, str::AbstractString)
         return true
     elseif !isnothing(match(r"^\.r\d+$", str))
         # ".r45"
+        return true
+    elseif !isnothing(match(r"^(\-|−?)(\d+)\.(\d+)r(\d+)e(-?\d)$", _str))
         return true
     else
         return false
@@ -52,8 +54,8 @@ function stringify(::ScientificNotation, rd::RepeatingDecimal)
     end
 end
 
-function RepeatingDecimal(::ScientificNotation, str::AbstractString)
-    str = _remove_underscore(str)
+function RepeatingDecimal(::ScientificNotation, _str::AbstractString)
+    str = _remove_underscore(_str)
     i = firstindex(str)
     local sign
     if str[i] == '-' || str[i] == '−'
@@ -112,7 +114,18 @@ function RepeatingDecimal(::ScientificNotation, str::AbstractString)
         repeating_part = str[3:end]
         r_repeating = parse(BigInt, repeating_part)
         return RepeatingDecimal(sign, big(0), r_repeating, 0, length(repeating_part))
-    else
-        error("invalid input!")
     end
+    m = match(r"^(\-|−?)(\d+)\.(\d+)r(\d+)e(-?\d)$", _str)
+    if !isnothing(m)
+        # 1.234r56e2
+        sign_str, integer_str, decimal_str, repeat_str, exponet_str = m.captures
+        period = length(repeat_str)
+        point_position = length(decimal_str)
+        r_finite = parse(BigInt, '0'*integer_str*decimal_str)
+        r_repeat = parse(BigInt, repeat_str)
+        sign = sign_str==""
+        rd = RepeatingDecimal(sign, r_finite, r_repeat, point_position, period)
+        return shift_decimal_point(rd, parse(Int, exponet_str))
+    end
+    error("invalid input!")
 end
