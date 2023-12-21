@@ -18,9 +18,15 @@ There are three types that represents a repeating decimal number; `String`, `Rat
     * The representation is not unique.
     * e.g. `"123.45(678)"`, `"123.456(786)"`, `"123.456_786_786(786_786)"`
 * [`RepeatingDecimal`](@ref)
-    * Stores `sign::Bool`, `integer_part::BigInt`, `finite_part::BigInt`, `repeating_part::BigInt`, `finite_digits::Int`, and `repeating_digits` to represent a repeating decimal.
+    * Stores `sign::Bool`, `finite_part::BigInt`, `repeat_part::BigInt`, `point_position::Int`, and `period` to represent a repeating decimal.
     * The representation is not unique.
-    * e.g. `RepeatingDecimal(true,123,45,678,2,3)`, `RepeatingDecimal(true,123,456,786,3,3)`, `RepeatingDecimal(true,123,456_786_786,786_786,9,6)`
+    * e.g. `RepeatingDecimal(true, 12345, 678, 2, 3)`, `RepeatingDecimal(true, 123456, 786, 3, 3)`, `RepeatingDecimal(true, 123456_786_786, 786_786, 9, 6)`
+
+```@repl design
+RepeatingDecimal(true, 12345, 678, 2, 3)
+RepeatingDecimal(true, 123456, 786, 3, 3)
+RepeatingDecimal(true, 123456_786_786, 786_786, 9, 6)
+```
 
 ## Converting functions: `stringify`, `rationalify`
 
