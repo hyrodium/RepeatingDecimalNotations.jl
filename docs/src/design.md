@@ -44,6 +44,7 @@ graph LR
 * These functions are not exported because the names of these functions does not imply relation to repeating decimals. Please use them like the following in your code.
     * `RepeatingDecimalNotations.stringify(...)`
     * `import RepeatingDecimalNotations: stringify`
+    * `using RepeatingDecimalNotations: stringify`
 
 ```@repl
 using RepeatingDecimalNotations
@@ -84,7 +85,7 @@ TODO: add support for `"123.456̇78̇"`
 
 ### `ScientificNotation`
 ```math
-123.45r678
+1.2345\text{r}678\text{e}2
 ```
 
 TODO: add support for `"123.45r678"`
@@ -94,7 +95,16 @@ TODO: add support for `"123.45r678"`
 123.45678678...
 ```
 
-TODO: add support for `"123.45678678..."`
+```@repl design
+rd"123.45678678..."
+no = EllipsisNotation()
+stringify(no, 1//11)
+rationalify(no, "123.45678678...")
+rd"0.4545..."      # Same as 0.(45), repeating [45] two times
+rd"0.333..."       # Same as 0.(3), repeating one digit [3] three times
+rd"0.13331333..."  # Same as 0.(1333), repeating [1333] has priority over repeating [3]
+rd"0.133313333..." # Same as 0.13331(3), adding additional [3] resolves the ambiguity.
+```
 
 ### Non-supported notation
 Vinculum notation ``123.45\overline{678}`` is not supported because it is hard to input with Unicode.
@@ -103,4 +113,4 @@ Vinculum notation ``123.45\overline{678}`` is not supported because it is hard t
 
 ![](assets/logo.svg)
 
-``0.\dot{6}\dot{6} = 12/18`` was the day of [the first commit of the repository](https://github.com/hyrodium/RepeatingDecimalNotations.jl/commit/218d639cd0e0ea07449a1ea7e571622cfd2e54fe).
+``0.\dot{6}\dot{6} = 12/18`` is [the birthday of the package](https://github.com/hyrodium/RepeatingDecimalNotations.jl/commit/218d639cd0e0ea07449a1ea7e571622cfd2e54fe).
