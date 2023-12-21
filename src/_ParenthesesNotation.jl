@@ -1,5 +1,37 @@
 struct ParenthesesNotation <: RepeatingDecimalNotation end
 
+function isvalidnotaiton(::ParenthesesNotation, str::AbstractString)
+    str = _remove_underscore(str)
+    i = firstindex(str)
+    if str[i] == '-' || str[i] == '−'
+        str = str[nextind(str, i):end]
+    end
+    if !isnothing(match(r"^\d+$", str))
+        # "123"
+        return true
+    elseif !isnothing(match(r"^\d+\.\d+$", str))
+        # "123.45"
+        return true
+    elseif !isnothing(match(r"^\d+\.\d+\(\d+\)$", str))
+        # "123.45(678)"
+        return true
+    elseif !isnothing(match(r"^\d+\.\(\d+\)$", str))
+        # "123.(45)"
+        return true
+    elseif !isnothing(match(r"^\.\d+$", str))
+        # ".45"
+        return true
+    elseif !isnothing(match(r"^\.\d+\(\d+\)$", str))
+        # ".45(678)"
+        return true
+    elseif !isnothing(match(r"^\.\(\d+\)$", str))
+        # ".(45)"
+        return true
+    else
+        return false
+    end
+end
+
 function stringify(::ParenthesesNotation, rd::RepeatingDecimal)
     integer_str = string(rd.finite_part)[begin:end-rd.point_position]
     finite_decimal_str = string(rd.finite_part)[end-rd.point_position+1:end]

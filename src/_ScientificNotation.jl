@@ -1,5 +1,37 @@
 struct ScientificNotation <: RepeatingDecimalNotation end
 
+function isvalidnotaiton(::ScientificNotation, str::AbstractString)
+    str = _remove_underscore(str)
+    i = firstindex(str)
+    if str[i] == '-' || str[i] == '−'
+        str = str[nextind(str, i):end]
+    end
+    if !isnothing(match(r"^\d+$", str))
+        # "123"
+        return true
+    elseif !isnothing(match(r"^\d+\.\d+$", str))
+        # "123.45"
+        return true
+    elseif !isnothing(match(r"^\d+\.\d+r\d+$", str))
+        # "123.45r678"
+        return true
+    elseif !isnothing(match(r"^\d+\.r\d+$", str))
+        # "123.r45"
+        return true
+    elseif !isnothing(match(r"^\.\d+$", str))
+        # ".45"
+        return true
+    elseif !isnothing(match(r"^\.\d+r\d+$", str))
+        # ".45r678"
+        return true
+    elseif !isnothing(match(r"^\.r\d+$", str))
+        # ".r45"
+        return true
+    else
+        return false
+    end
+end
+
 function stringify(::ScientificNotation, rd::RepeatingDecimal)
     integer_str = string(rd.finite_part)[begin:end-rd.point_position]
     finite_decimal_str = string(rd.finite_part)[end-rd.point_position+1:end]

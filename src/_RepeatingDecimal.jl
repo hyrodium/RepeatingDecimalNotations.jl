@@ -20,7 +20,7 @@ Finite part Repeating part
 """
 struct RepeatingDecimal
     sign::Bool  # true/false corresponds to +/-
-    finite_part::BigInt     # Finite decimal part
+    finite_part::BigInt  # Finite part, including both integer and decimal parts
     repeat_part::BigInt  # Repeating decimal part, easily overflows in Int64. (e.g. 1//97)
     point_position::Int  # digits of decimal part
     period::Int  # digits of repeating part
@@ -115,6 +115,11 @@ function RepeatingDecimal(r::Rational)
     return RepeatingDecimal(sign, finite, rep, pow, n)
 end
 
-# Defaults to `ParenthesesNotation`
-RepeatingDecimal(r::Union{Integer, Rational}) = RepeatingDecimal(ParenthesesNotation(), r)
-RepeatingDecimal(str::AbstractString) = RepeatingDecimal(ParenthesesNotation(), str)
+function RepeatingDecimal(str::AbstractString)
+    for no in (ParenthesesNotation(), ScientificNotation(), EllipsisNotation())
+        if isvalidnotaiton(no, str)
+            return RepeatingDecimal(no, str)
+        end
+    end
+    error("input string $str is not valid!")
+end

@@ -5,6 +5,7 @@ export RepeatingDecimal
 export RepeatingDecimalNotation
 export ParenthesesNotation
 export ScientificNotation
+export EllipsisNotation
 
 abstract type RepeatingDecimalNotation end
 
@@ -12,9 +13,10 @@ include("_util.jl")
 include("_RepeatingDecimal.jl")
 include("_ParenthesesNotation.jl")
 include("_ScientificNotation.jl")
+include("_EllipsisNotation.jl")
 
 macro rd_str(str)
-    rd = RepeatingDecimal(ParenthesesNotation(), str)
+    rd = RepeatingDecimal(str)
     r = rationalify(BigInt, rd)
     return _try_unpromote_type(r)
 end
