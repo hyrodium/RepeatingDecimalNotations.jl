@@ -29,6 +29,40 @@ function Base.:(==)(rd1::RepeatingDecimal, rd2::RepeatingDecimal)
     return (rd1.sign == rd2.sign)&(rd1.finite_part == rd2.finite_part)&(rd1.repeat_part == rd2.repeat_part)&(rd1.point_position == rd2.point_position)&(rd1.period == rd2.period)
 end
 
+function Base.show(io::IO, rd::RepeatingDecimal)
+    sign = rd.sign
+    finite_part = rd.finite_part
+    repeat_part = rd.repeat_part
+    point_position = rd.point_position
+    period = rd.period
+
+    integer_str = string(finite_part)[begin:end-point_position]
+    finite_decimal_str = string(finite_part)[end-point_position+1:end]
+    sign_str = sign ? "+" : "-"
+
+    digits_str = "$point_position|"*'-'^point_position*'|'*'-'^period*"|$period"
+    number_str = sign_str*integer_str*'.'*finite_decimal_str*"("*lpad(repeat_part,period,'0')[1:period]*")"
+    description_str = "Finite part Repeating part"
+
+    digits_left = point_position+3
+    number_left = findfirst('(', number_str)
+    description_left = 12
+    digits_right = length(digits_str) - digits_left
+    number_right = length(number_str) - number_left
+    description_right = length(description_str) - description_left
+
+    max_left = max(max(digits_left, number_left), description_left)
+    max_right = max(max(digits_right, number_right), description_right)
+
+    lines = [
+        ' '^(max_left-digits_left)*digits_str
+        ' '^(max_left-number_left)*number_str
+        '-'^(max_left-1)*' '*'-'^(max_right)
+        ' '^(max_left-description_left)*description_str
+    ]
+    print(io, join(lines, "\n"))
+end
+
 function RepeatingDecimal(r::Rational)
     if r < 0
         sign = false
