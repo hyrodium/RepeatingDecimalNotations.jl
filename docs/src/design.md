@@ -9,13 +9,16 @@ using InteractiveUtils
 ## Types that represents repeating decimals
 There are three types that represents a repeating decimal number; `String`, `Rational`, and [`RepeatingDecimal`](@ref).
 
-* `Rational`
+* `Rational{T}`
+    * Stores a numerator and a denominator as `T<:Real`.
     * The representation is unique.
     * e.g. `4111111//33300`
 * `String`
+    * Stores characters that can represent repeating decimals directly.
     * The representation is not unique.
     * e.g. `"123.45(678)"`, `"123.456(786)"`, `"123.456_786_786(786_786)"`
 * [`RepeatingDecimal`](@ref)
+    * Stores `sign::Bool`, `integer_part::BigInt`, `finite_part::BigInt`, `repeating_part::BigInt`, `finite_digits::Int`, and `repeating_digits` to represent a repeating decimal.
     * The representation is not unique.
     * e.g. `RepeatingDecimal(true,123,45,678,2,3)`, `RepeatingDecimal(true,123,456,786,3,3)`, `RepeatingDecimal(true,123,456_786_786,786_786,9,6)`
 
@@ -31,8 +34,8 @@ graph LR
     C -- "stringify" --> A
 ```
 
-* Avoid adding methods to `Base.string` and `Base.rationalize` not to induce Type III piracy.
-* These functions are not exported because the names of these functions does not imply relation to repeating decimals Please use them like the following in your code.
+* We avoided adding methods to `Base.string` and `Base.rationalize` not to induce type piracy.
+* These functions are not exported because the names of these functions does not imply relation to repeating decimals. Please use them like the following in your code.
     * `RepeatingDecimalNotations.stringify(...)`
     * `import RepeatingDecimalNotations: stringify`
 
@@ -55,30 +58,37 @@ subtypes(RepeatingDecimalNotation)
 ```
 
 ### `ParenthesesNotation` (Default)
-``123.45(678)`` (`"123.45(678)"`)
+```math
+123.45(678)
+```
 
 ```@repl design
+rd"123.45(678)"
 no = ParenthesesNotation()
 stringify(no, 1//11)
 rationalify(no, "123.45(678)")
-stringify(no, RepeatingDecimal(1//11))  # longer version
-rationalify(RepeatingDecimal(no, "123.45(678)"))  # longer version
 ```
 
 ### `DotsNotation`
-``123.45\dot{6}7\dot{8}`` (`"123.456̇78̇"`)
+```math
+123.45\dot{6}7\dot{8}
+```
 
-TODO
+TODO: add support for `"123.456̇78̇"`
 
 ### `ScientificNotation`
-``123.45r678`` (`"123.45r678"`)
+```math
+123.45r678
+```
 
-TODO
+TODO: add support for `"123.45r678"`
 
 ### `EllipsisNotation`
-``123.45678678...`` (`"123.45678678..."`)
+```math
+123.45678678...
+```
 
-TODO
+TODO: add support for `"123.45678678..."`
 
 ### Non-supported notation
 Vinculum notation ``123.45\overline{678}`` is not supported because it is hard to input with Unicode.
