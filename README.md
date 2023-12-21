@@ -7,7 +7,13 @@ A Julia package to handle repeating decimal numbers.
 [![Build Status](https://github.com/hyrodium/RepeatingDecimalNotations.jl/workflows/CI/badge.svg)](https://github.com/hyrodium/RepeatingDecimalNotations.jl/actions)
 [![Coverage](https://codecov.io/gh/hyrodium/RepeatingDecimalNotations.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/hyrodium/RepeatingDecimalNotations.jl)
 [![Aqua QA](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
-[![RepeatingDecimalNotations Downloads](https://shields.io/endpoint?url=https://pkgs.genieframework.com/api/v1/badge/RepeatingDecimalNotations)](https://pkgs.genieframework.com?packages=RepeatingDecimalNotations).
+[![RepeatingDecimalNotations Downloads](https://shields.io/endpoint?url=https://pkgs.genieframework.com/api/v1/badge/RepeatingDecimalNotations)](https://pkgs.genieframework.com?packages=RepeatingDecimalNotations)
+
+<p align="center">
+   <img src = "docs/src/assets/logo.svg" />
+</p>
+
+# Quick start
 
 ```julia
 julia> using RepeatingDecimalNotations
