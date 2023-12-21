@@ -18,10 +18,11 @@ function stringify(::ParenthesesNotation, rd::RepeatingDecimal)
         rep_str = "($(lpad(string(rep), n, '0')))"
     end
     decimal_part = "$dec_str$rep_str"
+    sign_str = rd.sign ? "" : "-"
     if decimal_part == ""
-        return "$int_str"
+        return "$sign_str$int_str"
     else
-        return "$int_str.$decimal_part"
+        return "$sign_str$int_str.$decimal_part"
     end
 end
 
@@ -66,9 +67,8 @@ function RepeatingDecimal(::ParenthesesNotation, str::AbstractString)
         integer_part = str[1:dot_index-1]
         repeating_part = str[left_index+1:end-1]
         r_integer = parse(BigInt, integer_part)
-        r_finite = big(0)
         r_repeating = parse(BigInt, repeating_part)
-        return RepeatingDecimal(sign, r_integer, r_finite, r_repeating, 0, length(repeating_part))
+        return RepeatingDecimal(sign, r_integer, big(0), r_repeating, 0, length(repeating_part))
     elseif !isnothing(match(r"^\.\d+$", str))
         # ".45"
         finite_part = str[2:end]
