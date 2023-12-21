@@ -123,3 +123,25 @@ function RepeatingDecimal(str::AbstractString)
     end
     error("input string $str is not valid!")
 end
+
+function shift_decimal_point(rd::RepeatingDecimal, i::Integer)
+    sign = rd.sign
+    finite_part = rd.finite_part
+    repeat_part = rd.repeat_part
+    point_position = rd.point_position
+    period = rd.period
+    if i == 0
+        return rd
+    elseif i ≤ point_position
+        point_position = point_position - i
+        rd = RepeatingDecimal(sign, finite_part, repeat_part, point_position, period)
+        return rd
+    else
+        n = i - point_position
+        finite_part *= big(10)^n
+        finite_part += parse(BigInt, join([lpad(repeat_part, period, '0')[mod(i, 1:period)] for i in 1:n]))
+        repeat_part = parse(BigInt, join([lpad(repeat_part, period, '0')[mod(i+n, 1:period)] for i in 1:period]))
+        rd = RepeatingDecimal(sign, finite_part, repeat_part, 0, period)
+        return rd
+    end
+end

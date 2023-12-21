@@ -6,6 +6,7 @@ export RepeatingDecimalNotation
 export ParenthesesNotation
 export ScientificNotation
 export EllipsisNotation
+export shift_decimal_point
 
 abstract type RepeatingDecimalNotation end
 
