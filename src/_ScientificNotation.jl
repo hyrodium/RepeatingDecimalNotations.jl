@@ -68,26 +68,16 @@ function RepeatingDecimal(::ScientificNotation, _str::AbstractString)
     end
     m = match(r"^(\-|−?)(\d+)$", _str)
     if !isnothing(m)
-        # "123"
+        # 123
         sign_str, integer_str = m.captures
         return _repeating_decimal_from_strings(sign_str, integer_str, "", "0")
     end
     m = match(r"^(\-|−?)(\d+)\.(\d*)$", _str)
     if !isnothing(m)
-        # "123.45"
-        # "123."
+        # 123.45
+        # 123.
         sign_str, integer_str, decimal_str = m.captures
         return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, "0")
-    elseif !isnothing(match(r"^\d+\.\d+r\d+$", str))
-        # "123.45r678"
-        dot_index = findfirst(==('.'), str)
-        left_index = findfirst(==('r'), str)
-        integer_part = str[1:dot_index-1]
-        finite_part = str[dot_index+1:left_index-1]
-        repeating_part = str[left_index+1:end]
-        r_repeating = parse(BigInt, repeating_part)
-        r_finite = parse(BigInt, integer_part*finite_part)
-        return RepeatingDecimal(sign, r_finite, r_repeating, length(finite_part), length(repeating_part))
     end
     m = match(r"^(\-|−?)\.(\d+)$", _str)
     if !isnothing(m)
@@ -95,11 +85,12 @@ function RepeatingDecimal(::ScientificNotation, _str::AbstractString)
         sign_str, decimal_str, = m.captures
         return _repeating_decimal_from_strings(sign_str, "", decimal_str, "0")
     end
-    m = match(r"^(\-|−?)\.(\d+)r(\d+)$", _str)
+    m = match(r"^(\-|−?)(\d+)\.(\d*)r(\d+)$", _str)
     if !isnothing(m)
-        # .234r56e2
-        sign_str, decimal_str, repeat_str = m.captures
-        return _repeating_decimal_from_strings(sign_str, "", decimal_str, repeat_str)
+        # 123.45r678
+        # 123.r45
+        sign_str, integer_str, decimal_str, repeat_str = m.captures
+        return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, repeat_str)
     end
     m = match(r"^(\-|−?)(\d+)\.(\d*)r(\d+)$", _str)
     if !isnothing(m)
@@ -108,15 +99,17 @@ function RepeatingDecimal(::ScientificNotation, _str::AbstractString)
         sign_str, integer_str, decimal_str, repeat_str = m.captures
         return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, repeat_str)
     end
-    m = match(r"^(\-|−?)\.r(\d+)$", _str)
+    m = match(r"^(\-|−?)\.(\d*)r(\d+)$", _str)
     if !isnothing(m)
-        # .r45
-        sign_str, repeat_str, = m.captures
-        return _repeating_decimal_from_strings(sign_str, "", "", repeat_str)
+        # .234r56
+        # .r123
+        sign_str, decimal_str, repeat_str = m.captures
+        return _repeating_decimal_from_strings(sign_str, "", decimal_str, repeat_str)
     end
-    m = match(r"^(\-|−?)\.(\d+)r(\d+)e(-?\d)$", _str)
+    m = match(r"^(\-|−?)\.(\d*)r(\d+)e(-?\d)$", _str)
     if !isnothing(m)
         # .234r56e2
+        # .r56e2
         sign_str, decimal_str, repeat_str, exponet_str = m.captures
         return _repeating_decimal_from_strings(sign_str, "", decimal_str, repeat_str, exponet_str)
     end
