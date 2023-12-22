@@ -6,9 +6,9 @@ function isvalidnotaiton(::ScientificNotation, str::AbstractString)
     isnothing(match(r"^(\-|−?)(\d*)\.(\d+)$", str)) || return true
     isnothing(match(r"^(\-|−?)(\d+)\.(\d*)r(\d+)$", str)) || return true
     isnothing(match(r"^(\-|−?)\.(\d*)r(\d+)$", str)) || return true
-    isnothing(match(r"^(\-|−?)(\d+)\.(\d*)e(\d+)$", str)) || return true
-    isnothing(match(r"^(\-|−?)\.(\d+)e(\d+)$", str)) || return true
-    isnothing(match(r"^(\-|−?)(\d*)\.(\d*)r(\d+)e(-?\d)$", str)) || return true
+    isnothing(match(r"^(\-|−?)(\d+)\.(\d*)e((\-|−)?\d+)$", str)) || return true
+    isnothing(match(r"^(\-|−?)\.(\d+)e((\-|−)?\d+)$", str)) || return true
+    isnothing(match(r"^(\-|−?)(\d*)\.(\d*)r(\d+)e((\-|−)?\d+)$", str)) || return true
     return false
 end
 
@@ -62,20 +62,20 @@ function RepeatingDecimal(::ScientificNotation, str::AbstractString)
         sign_str, decimal_str, repeat_str = m.captures
         return _repeating_decimal_from_strings(sign_str, "", decimal_str, repeat_str)
     end
-    m = match(r"^(\-|−?)(\d+)\.(\d*)e(\d+)$", str)
+    m = match(r"^(\-|−?)(\d+)\.(\d*)e((\-|−)?\d+)$", str)
     if !isnothing(m)
         # 1.234e56
         # 1.e23
         sign_str, integer_str, decimal_str, exponent_str = m.captures
         return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, "0", exponent_str)
     end
-    m = match(r"^(\-|−?)\.(\d+)e(\d+)$", str)
+    m = match(r"^(\-|−?)\.(\d+)e((\-|−)?\d+)$", str)
     if !isnothing(m)
         # .234e56
         sign_str, decimal_str, exponent_str = m.captures
         return _repeating_decimal_from_strings(sign_str, "", decimal_str, "0", exponent_str)
     end
-    m = match(r"^(\-|−?)(\d*)\.(\d*)r(\d+)e(-?\d)$", str)
+    m = match(r"^(\-|−?)(\d*)\.(\d*)r(\d+)e((\-|−)?\d+)$", str)
     if !isnothing(m)
         # 1.234r56e2
         # 1.r23e2
