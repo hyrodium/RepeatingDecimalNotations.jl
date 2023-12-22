@@ -6,7 +6,7 @@ function isvalidnotaiton(::ScientificNotation, _str::AbstractString)
     if str[i] == '-' || str[i] == '−'
         str = str[nextind(str, i):end]
     end
-    if !isnothing(match(r"^\d+$", str))
+    if !isnothing(match(r"^(\-|−?)(\d+)$", _str))
         # "123"
         return true
     elseif !isnothing(match(r"^\d+\.\d+$", str))
