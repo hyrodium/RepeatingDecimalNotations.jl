@@ -72,13 +72,12 @@ function RepeatingDecimal(::ScientificNotation, _str::AbstractString)
         sign_str, integer_str = m.captures
         return _repeating_decimal_from_strings(sign_str, integer_str, "", "0")
     end
-    if !isnothing(match(r"^\d+\.\d+$", str))
+    m = match(r"^(\-|−?)(\d+)\.(\d*)$", _str)
+    if !isnothing(m)
         # "123.45"
-        dot_index = findfirst(==('.'), str)
-        integer_part = str[1:dot_index-1]
-        finite_part = str[dot_index+1:end]
-        r_finite = parse(BigInt, integer_part*finite_part)
-        return RepeatingDecimal(sign, r_finite, big(0), length(finite_part), 1)
+        # "123."
+        sign_str, integer_str, decimal_str = m.captures
+        return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, "0")
     elseif !isnothing(match(r"^\d+\.\d+r\d+$", str))
         # "123.45r678"
         dot_index = findfirst(==('.'), str)
