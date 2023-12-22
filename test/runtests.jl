@@ -85,6 +85,50 @@ end
     @test rationalify("0.1(6)") === 1//6
 end
 
+@testset "RepeatingDecimal" begin
+    @testset "show" begin
+        rd = RepeatingDecimal("14.5(64)")
+        @test string(rd)*"\n" == """
+                1|-|--|2
+              +14.5(64)
+        ----------- --------------
+        Finite part Repeating part
+        """
+
+        rd = RepeatingDecimal("0.00145(64)")
+        @test string(rd)*"\n" == """
+            5|-----|--|2
+           +0.00145(64)
+        ----------- --------------
+        Finite part Repeating part
+        """
+
+        rd = RepeatingDecimal("0")
+        @test string(rd)*"\n" == """
+                 0||-|1
+                +0.(0)
+        ----------- --------------
+        Finite part Repeating part
+        """
+
+        rd = RepeatingDecimal("0.001")
+        @test string(rd)*"\n" == """
+              3|---|-|1
+             +0.001(0)
+        ----------- --------------
+        Finite part Repeating part
+        """
+
+        rd = RepeatingDecimal(1//7)
+        @test string(rd)*"\n" == """
+                 0||------|6
+                +0.(142857)
+        ----------- --------------
+        Finite part Repeating part
+        """
+    end
+end
+
 @testset "notations" begin
     @testset "ParenthesesNotation" begin
         no = ParenthesesNotation()

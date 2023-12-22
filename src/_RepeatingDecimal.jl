@@ -42,7 +42,9 @@ function Base.show(io::IO, rd::RepeatingDecimal)
     period = rd.period
 
     integer_str = string(finite_part)[begin:end-point_position]
-    finite_decimal_str = string(finite_part)[end-point_position+1:end]
+    integer_str = integer_str=="" ? "0" : integer_str
+    finite_decimal_str = string(finite_part)[max(end-point_position+1,1):end]
+    finite_decimal_str = lpad(finite_decimal_str, point_position, '0')
     sign_str = sign ? "+" : "-"
 
     digits_str = "$point_position|"*'-'^point_position*'|'*'-'^period*"|$period"
