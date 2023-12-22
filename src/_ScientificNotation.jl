@@ -3,7 +3,7 @@ struct ScientificNotation <: RepeatingDecimalNotation end
 function isvalidnotaiton(::ScientificNotation, _str::AbstractString)
     str = _remove_underscore(_str)
     i = firstindex(str)
-    if str[i] == '-' || str[i] == '−'
+    if str[i] == '-'
         str = str[nextind(str, i):end]
     end
     if !isnothing(match(r"^\d+$", str))
@@ -27,7 +27,7 @@ function isvalidnotaiton(::ScientificNotation, _str::AbstractString)
     elseif !isnothing(match(r"^\.r\d+$", str))
         # ".r45"
         return true
-    elseif !isnothing(match(r"^(\-|−?)(\d+)\.(\d+)r(\d+)e(-?\d)$", _str))
+    elseif !isnothing(match(r"^(\-?)(\d+)\.(\d+)r(\d+)e(-?\d)$", _str))
         return true
     else
         return false
@@ -58,7 +58,7 @@ function RepeatingDecimal(::ScientificNotation, _str::AbstractString)
     str = _remove_underscore(_str)
     i = firstindex(str)
     local sign
-    if str[i] == '-' || str[i] == '−'
+    if str[i] == '-'
         sign = false
         str = str[nextind(str, i):end]
     else
@@ -115,7 +115,7 @@ function RepeatingDecimal(::ScientificNotation, _str::AbstractString)
         r_repeating = parse(BigInt, repeating_part)
         return RepeatingDecimal(sign, big(0), r_repeating, 0, length(repeating_part))
     end
-    m = match(r"^(\-|−?)(\d+)\.(\d+)r(\d+)e(-?\d)$", _str)
+    m = match(r"^(\-?)(\d+)\.(\d+)r(\d+)e(-?\d)$", _str)
     if !isnothing(m)
         # 1.234r56e2
         sign_str, integer_str, decimal_str, repeat_str, exponet_str = m.captures

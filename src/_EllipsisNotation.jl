@@ -1,16 +1,14 @@
 struct EllipsisNotation <: RepeatingDecimalNotation end
 
-m = match(r"^(-|−?)(\d+)\.(\d*)(\d\d+)\4{1,}\.\.\.$", "-12.12341234...")
-
 function isvalidnotaiton(::EllipsisNotation, str::AbstractString)
     str = _remove_underscore(str)
-    m = match(r"^(\-|−?)(\d+)$", str)
+    m = match(r"^(\-?)(\d+)$", str)
     isnothing(m) || return true
-    m = match(r"^(\-|−?)(\d*)\.(\d+)$", str)
+    m = match(r"^(\-?)(\d*)\.(\d+)$", str)
     isnothing(m) || return true
-    m = match(r"^(\-|−?)(\d*)\.(\d*)(\d\d+)\4{1,}\.\.\.$", str)
+    m = match(r"^(\-?)(\d*)\.(\d*)(\d\d+)\4{1,}\.\.\.$", str)
     isnothing(m) || return true
-    m = match(r"^(\-|−?)(\d*)\.(\d*)(\d)\4{2,}\.\.\.$", str)
+    m = match(r"^(\-?)(\d*)\.(\d*)(\d)\4{2,}\.\.\.$", str)
     isnothing(m) || return true
     return false
 end
@@ -41,7 +39,7 @@ end
 
 function RepeatingDecimal(::EllipsisNotation, str::AbstractString)
     str = _remove_underscore(str)
-    m = match(r"^(\-|−?)(\d+)$", str)
+    m = match(r"^(\-?)(\d+)$", str)
     if !isnothing(m)
         # "-1234"
         sign_str, integer_str = m.captures
@@ -52,7 +50,7 @@ function RepeatingDecimal(::EllipsisNotation, str::AbstractString)
         sign = sign_str==""
         return RepeatingDecimal(sign, r_finite, r_repeat, point_position, period)
     end
-    m = match(r"^(\-|−?)(\d*)\.(\d+)$", str)
+    m = match(r"^(\-?)(\d*)\.(\d+)$", str)
     if !isnothing(m)
         # "-123.4"
         sign_str, integer_str, decimal_str = m.captures
@@ -63,7 +61,7 @@ function RepeatingDecimal(::EllipsisNotation, str::AbstractString)
         sign = sign_str==""
         return RepeatingDecimal(sign, r_finite, r_repeat, point_position, period)
     end
-    m = match(r"^(\-|−?)(\d*)\.(\d*)(\d\d+)\4{1,}\.\.\.$", str)
+    m = match(r"^(\-?)(\d*)\.(\d*)(\d\d+)\4{1,}\.\.\.$", str)
     if !isnothing(m)
         # "-123.45656..."
         sign_str, integer_str, decimal_str, repeat_str = m.captures
@@ -74,7 +72,7 @@ function RepeatingDecimal(::EllipsisNotation, str::AbstractString)
         sign = sign_str==""
         return RepeatingDecimal(sign, r_finite, r_repeat, point_position, period)
     end
-    m = match(r"^(\-|−?)(\d*)\.(\d*)(\d)\4{2,}\.\.\.$", str)
+    m = match(r"^(\-?)(\d*)\.(\d*)(\d)\4{2,}\.\.\.$", str)
     if !isnothing(m)
         # "-123.4333..."
         sign_str, integer_str, decimal_str, repeat_str = m.captures

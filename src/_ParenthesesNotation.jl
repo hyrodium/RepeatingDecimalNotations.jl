@@ -3,7 +3,7 @@ struct ParenthesesNotation <: RepeatingDecimalNotation end
 function isvalidnotaiton(::ParenthesesNotation, str::AbstractString)
     str = _remove_underscore(str)
     i = firstindex(str)
-    if str[i] == '-' || str[i] == '−'
+    if str[i] == '-'
         str = str[nextind(str, i):end]
     end
     if !isnothing(match(r"^\d+$", str))
@@ -56,7 +56,7 @@ function RepeatingDecimal(::ParenthesesNotation, str::AbstractString)
     str = _remove_underscore(str)
     i = firstindex(str)
     local sign
-    if str[i] == '-' || str[i] == '−'
+    if str[i] == '-'
         sign = false
         str = str[nextind(str, i):end]
     else

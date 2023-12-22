@@ -7,7 +7,7 @@ Aqua.test_all(RepeatingDecimalNotations)
 
 @testset "@rd_str macro" begin
     @test rd"1.0"    === 1//1
-    @test rd"−1"     === -1//1
+    @test rd"-1"     === -1//1
     @test rd".45"    === 45//100
 
     @testset "ParenthesesNotation" begin
