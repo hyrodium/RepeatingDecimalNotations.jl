@@ -18,7 +18,7 @@ There are three types that represents a repeating decimal number; `String`, `Rat
     * The representation is not unique.
     * e.g. `"123.45(678)"`, `"123.456(786)"`, `"123.456_786_786(786_786)"`
 * [`RepeatingDecimal`](@ref)
-    * Stores `sign::Bool`, `finite_part::BigInt`, `repeat_part::BigInt`, `point_position::Int`, and `period` to represent a repeating decimal.
+    * Stores `sign::Bool`, `finite_part::BigInt`, `repeat_part::BigInt`, `point_position::Int`, and `period::Int` to represent a repeating decimal.
     * The representation is not unique.
     * e.g. `RepeatingDecimal(true, 12345, 678, 2, 3)`, `RepeatingDecimal(true, 123456, 786, 3, 3)`, `RepeatingDecimal(true, 123456_786_786, 786_786, 9, 6)`
 
@@ -89,10 +89,11 @@ TODO: add support for `"123.456̇78̇"`
 ```
 
 ```@repl design
-rd"1.2345r678e2"
+rd"123.45r678"
 no = ScientificNotation()
 stringify(no, 1//11)
-rationalify(no, "1.2345r678e2")
+rationalify(no, "123.45r678")
+rd"1.2345r678e2"  #　Exponent term is supported.
 ```
 
 ### `EllipsisNotation`
