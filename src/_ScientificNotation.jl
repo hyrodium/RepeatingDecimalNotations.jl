@@ -2,12 +2,12 @@ struct ScientificNotation <: RepeatingDecimalNotation end
 
 function isvalidnotaiton(::ScientificNotation, str::AbstractString)
     str = _remove_underscore(str)
-    isnothing(match(r"^(\-|−?)(\d+)\.?$", str)) || return true
-    isnothing(match(r"^(\-|−?)(\d*)\.(\d+)$", str)) || return true
-    isnothing(match(r"^(\-|−?)(\d+)\.(\d*)r(\d+)$", str)) || return true
-    isnothing(match(r"^(\-|−?)\.(\d*)r(\d+)$", str)) || return true
-    isnothing(match(r"^(\-|−?)(\d+)\.(\d*)e((\-|−)?\d+)$", str)) || return true
-    isnothing(match(r"^(\-|−?)\.(\d+)e((\-|−)?\d+)$", str)) || return true
+    isnothing(match(r"^(\-|−?)(\d+)\.?$", str))                        || return true
+    isnothing(match(r"^(\-|−?)(\d*)\.(\d+)$", str))                    || return true
+    isnothing(match(r"^(\-|−?)(\d+)\.(\d*)r(\d+)$", str))              || return true
+    isnothing(match(r"^(\-|−?)\.(\d*)r(\d+)$", str))                   || return true
+    isnothing(match(r"^(\-|−?)(\d+)\.(\d*)e((\-|−)?\d+)$", str))       || return true
+    isnothing(match(r"^(\-|−?)\.(\d+)e((\-|−)?\d+)$", str))            || return true
     isnothing(match(r"^(\-|−?)(\d*)\.(\d*)r(\d+)e((\-|−)?\d+)$", str)) || return true
     return false
 end
