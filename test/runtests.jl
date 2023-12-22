@@ -88,7 +88,7 @@ end
         @test stringify(no, RepeatingDecimal(rd".(45)"))       == "0.(45)"
 
         @test rationalify(RepeatingDecimal(no, "-123"))        == rd"-123"
-        @test rationalify(RepeatingDecimal(no, "-123."))       == rd"-123"  broken=true
+        @test rationalify(RepeatingDecimal(no, "-123."))       == rd"-123"
         @test rationalify(RepeatingDecimal(no, "-123.45"))     == rd"-123.45"
         @test rationalify(RepeatingDecimal(no, "123.45(678)")) == rd"123.45(678)"
         @test rationalify(RepeatingDecimal(no, "123.(45)"))    == rd"123.(45)"
