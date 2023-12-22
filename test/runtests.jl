@@ -105,7 +105,7 @@ end
 
         rd = RepeatingDecimal("0")
         @test string(rd)*"\n" == """
-                0||-|1
+                 0||-|1
                 +0.(0)
         ----------- --------------
         Finite part Repeating part
@@ -113,8 +113,8 @@ end
 
         rd = RepeatingDecimal("0.001")
         @test string(rd)*"\n" == """
-                3|---|-|1
-                +0.001(0)
+              3|---|-|1
+             +0.001(0)
         ----------- --------------
         Finite part Repeating part
         """
