@@ -1,7 +1,5 @@
 struct EllipsisNotation <: RepeatingDecimalNotation end
 
-m = match(r"^(-|−?)(\d+)\.(\d*)(\d\d+)\4{1,}\.\.\.$", "-12.12341234...")
-
 function isvalidnotaiton(::EllipsisNotation, str::AbstractString)
     str = _remove_underscore(str)
     m = match(r"^(\-|−?)(\d+)$", str)
@@ -41,16 +39,12 @@ end
 
 function RepeatingDecimal(::EllipsisNotation, str::AbstractString)
     str = _remove_underscore(str)
-    m = match(r"^(\-|−?)(\d+)$", str)
+    m = match(r"^(\-|−?)(\d+)\.?$", str)
     if !isnothing(m)
         # "-1234"
+        # "1234."
         sign_str, integer_str = m.captures
-        period = 1
-        point_position = 0
-        r_finite = parse(BigInt, integer_str)
-        r_repeat = 0
-        sign = sign_str==""
-        return RepeatingDecimal(sign, r_finite, r_repeat, point_position, period)
+        return _repeating_decimal_from_strings(sign_str, integer_str, "", "0")
     end
     m = match(r"^(\-|−?)(\d*)\.(\d+)$", str)
     if !isnothing(m)
@@ -63,12 +57,6 @@ function RepeatingDecimal(::EllipsisNotation, str::AbstractString)
         r_repeat = 0
         sign = sign_str==""
         return RepeatingDecimal(sign, r_finite, r_repeat, point_position, period)
-    end
-    m = match(r"^(\-|−?)(\d+)\.$", str)
-    if !isnothing(m)
-        # "-123."
-        sign_str, integer_str = m.captures
-        return _repeating_decimal_from_strings(sign_str, integer_str, "", "0")
     end
     m = match(r"^(\-|−?)(\d*)\.(\d*)(\d\d+)\4{1,}\.\.\.$", str)
     if !isnothing(m)
