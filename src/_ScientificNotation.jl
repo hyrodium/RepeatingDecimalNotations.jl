@@ -56,64 +56,56 @@ function stringify(::ScientificNotation, rd::RepeatingDecimal)
     end
 end
 
-function RepeatingDecimal(::ScientificNotation, _str::AbstractString)
-    str = _remove_underscore(_str)
-    i = firstindex(str)
-    local sign
-    if str[i] == '-' || str[i] == '−'
-        sign = false
-        str = str[nextind(str, i):end]
-    else
-        sign = true
-    end
-    m = match(r"^(\-|−?)(\d+)$", _str)
+function RepeatingDecimal(::ScientificNotation, str::AbstractString)
+    str = _remove_underscore(str)
+    m = match(r"^(\-|−?)(\d+)$", str)
     if !isnothing(m)
         # 123
         sign_str, integer_str = m.captures
         return _repeating_decimal_from_strings(sign_str, integer_str, "", "0")
     end
-    m = match(r"^(\-|−?)(\d+)\.(\d*)$", _str)
+    m = match(r"^(\-|−?)(\d+)\.(\d*)$", str)
     if !isnothing(m)
         # 123.45
         # 123.
         sign_str, integer_str, decimal_str = m.captures
         return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, "0")
     end
-    m = match(r"^(\-|−?)\.(\d+)$", _str)
+    m = match(r"^(\-|−?)\.(\d+)$", str)
     if !isnothing(m)
         # .45
         sign_str, decimal_str, = m.captures
         return _repeating_decimal_from_strings(sign_str, "", decimal_str, "0")
     end
-    m = match(r"^(\-|−?)(\d+)\.(\d*)r(\d+)$", _str)
+    m = match(r"^(\-|−?)(\d+)\.(\d*)r(\d+)$", str)
     if !isnothing(m)
         # 123.45r678
         # 123.r45
         sign_str, integer_str, decimal_str, repeat_str = m.captures
         return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, repeat_str)
     end
-    m = match(r"^(\-|−?)(\d+)\.(\d*)r(\d+)$", _str)
+    m = match(r"^(\-|−?)(\d+)\.(\d*)r(\d+)$", str)
     if !isnothing(m)
         # 1.234r56
         # 1.r23
         sign_str, integer_str, decimal_str, repeat_str = m.captures
         return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, repeat_str)
     end
-    m = match(r"^(\-|−?)\.(\d*)r(\d+)$", _str)
+    m = match(r"^(\-|−?)\.(\d*)r(\d+)$", str)
     if !isnothing(m)
         # .234r56
         # .r123
         sign_str, decimal_str, repeat_str = m.captures
         return _repeating_decimal_from_strings(sign_str, "", decimal_str, repeat_str)
     end
-    m = match(r"^(\-|−?)\.(\d*)r(\d+)e(-?\d)$", _str)
+    m = match(r"^(\-|−?)\.(\d*)r(\d+)e(-?\d)$", str)
     if !isnothing(m)
         # .234r56e2
         # .r56e2
         sign_str, decimal_str, repeat_str, exponet_str = m.captures
         return _repeating_decimal_from_strings(sign_str, "", decimal_str, repeat_str, exponet_str)
     end
-    m = match(r"^(\-|−?)(\d+)\.(\d*)r(\d+)e(-?\d)$", _str)
+    m = match(r"^(\-|−?)(\d+)\.(\d*)r(\d+)e(-?\d)$", str)
     if !isnothing(m)
         # 1.234r56e2
         # 1.r23e2
