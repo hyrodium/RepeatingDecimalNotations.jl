@@ -66,8 +66,7 @@ function RepeatingDecimal(::ScientificNotation, str::AbstractString)
     end
     m = match(r"^(\-|−?)(\d+)\.(\d*)$", str)
     if !isnothing(m)
-        # 123.45
-        # 123.
+        # 123.45, 123.
         sign_str, integer_str, decimal_str = m.captures
         return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, "0")
     end
@@ -79,36 +78,31 @@ function RepeatingDecimal(::ScientificNotation, str::AbstractString)
     end
     m = match(r"^(\-|−?)(\d+)\.(\d*)r(\d+)$", str)
     if !isnothing(m)
-        # 123.45r678
-        # 123.r45
+        # 123.45r678, 123.r45
         sign_str, integer_str, decimal_str, repeat_str = m.captures
         return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, repeat_str)
     end
     m = match(r"^(\-|−?)(\d+)\.(\d*)r(\d+)$", str)
     if !isnothing(m)
-        # 1.234r56
-        # 1.r23
+        # 1.234r56, 1.r23
         sign_str, integer_str, decimal_str, repeat_str = m.captures
         return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, repeat_str)
     end
     m = match(r"^(\-|−?)\.(\d*)r(\d+)$", str)
     if !isnothing(m)
-        # .234r56
-        # .r123
+        # .234r56, .r123
         sign_str, decimal_str, repeat_str = m.captures
         return _repeating_decimal_from_strings(sign_str, "", decimal_str, repeat_str)
     end
     m = match(r"^(\-|−?)\.(\d*)r(\d+)e(-?\d)$", str)
     if !isnothing(m)
-        # .234r56e2
-        # .r56e2
+        # .234r56e2, .r56e2
         sign_str, decimal_str, repeat_str, exponet_str = m.captures
         return _repeating_decimal_from_strings(sign_str, "", decimal_str, repeat_str, exponet_str)
     end
     m = match(r"^(\-|−?)(\d+)\.(\d*)r(\d+)e(-?\d)$", str)
     if !isnothing(m)
-        # 1.234r56e2
-        # 1.r23e2
+        # 1.234r56e2, 1.r23e2
         sign_str, integer_str, decimal_str, repeat_str, exponet_str = m.captures
         return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, repeat_str, exponet_str)
     end
