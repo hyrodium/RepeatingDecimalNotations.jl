@@ -88,11 +88,12 @@ function RepeatingDecimal(::ScientificNotation, _str::AbstractString)
         r_repeating = parse(BigInt, repeating_part)
         r_finite = parse(BigInt, integer_part*finite_part)
         return RepeatingDecimal(sign, r_finite, r_repeating, length(finite_part), length(repeating_part))
-    elseif !isnothing(match(r"^\.\d+$", str))
-        # ".45"
-        finite_part = str[2:end]
-        r_finite = parse(BigInt, finite_part)
-        return RepeatingDecimal(sign, r_finite, big(0), length(finite_part), 1)
+    end
+    m = match(r"^(\-|−?)\.(\d+)$", _str)
+    if !isnothing(m)
+        # .45
+        sign_str, decimal_str, = m.captures
+        return _repeating_decimal_from_strings(sign_str, "", decimal_str, "0")
     end
     m = match(r"^(\-|−?)\.(\d+)r(\d+)$", _str)
     if !isnothing(m)
