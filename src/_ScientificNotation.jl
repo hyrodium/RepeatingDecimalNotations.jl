@@ -84,22 +84,3 @@ function RepeatingDecimal(::ScientificNotation, str::AbstractString)
     end
     error("invalid input!")
 end
-
-function _repeating_decimal_from_strings(sign_str::AbstractString, integer_str::AbstractString, decimal_str::AbstractString, repeat_str::AbstractString, exponet_str::AbstractString)
-    period = length(repeat_str)
-    point_position = length(decimal_str)
-    r_finite = parse(BigInt, '0'*integer_str*decimal_str)
-    r_repeat = parse(BigInt, repeat_str)
-    sign = sign_str==""
-    rd = RepeatingDecimal(sign, r_finite, r_repeat, point_position, period)
-    return shift_decimal_point(rd, parse(Int, exponet_str))
-end
-
-function _repeating_decimal_from_strings(sign_str::AbstractString, integer_str::AbstractString, decimal_str::AbstractString, repeat_str::AbstractString)
-    period = length(repeat_str)
-    point_position = length(decimal_str)
-    r_finite = parse(BigInt, '0'*integer_str*decimal_str)
-    r_repeat = parse(BigInt, repeat_str)
-    sign = sign_str==""
-    return RepeatingDecimal(sign, r_finite, r_repeat, point_position, period)
-end
