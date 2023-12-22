@@ -1,39 +1,48 @@
 struct ScientificNotation <: RepeatingDecimalNotation end
 
-function isvalidnotaiton(::ScientificNotation, _str::AbstractString)
-    str = _remove_underscore(_str)
-    i = firstindex(str)
-    if str[i] == '-' || str[i] == '−'
-        str = str[nextind(str, i):end]
+function isvalidnotaiton(::ScientificNotation, str::AbstractString)
+    str = _remove_underscore(str)
+    m = match(r"^(\-|−?)(\d+)$", str)
+    if !isnothing(m)
+        # 123
+        return true
     end
-    if !isnothing(match(r"^(\-|−?)(\d+)$", _str))
-        # "123"
+    m = match(r"^(\-|−?)(\d+)\.(\d*)$", str)
+    if !isnothing(m)
+        # 123.45, 123.
         return true
-    elseif !isnothing(match(r"^\d+\.\d+$", str))
-        # "123.45"
-        return true
-    elseif !isnothing(match(r"^\d+\.\d+r\d+$", str))
-        # "123.45r678"
-        return true
-    elseif !isnothing(match(r"^\d+\.r\d+$", str))
-        # "123.r45"
-        return true
-    elseif !isnothing(match(r"^\.\d+$", str))
-        # ".45"
-        return true
-    elseif !isnothing(match(r"^\.\d+r\d+$", str))
-        # ".45r678"
-        return true
-    elseif !isnothing(match(r"^(\-|−?)\.r(\d+)$", _str))
-        # ".r45"
-        return true
-    elseif !isnothing(match(r"^(\-|−?)\.(\d+)r(\d+)e(-?\d)$", _str))
-        return true
-    elseif !isnothing(match(r"^(\-|−?)(\d+)\.(\d*)r(\d+)e(-?\d)$", _str))
-        return true
-    else
-        return false
     end
+    m = match(r"^(\-|−?)\.(\d+)$", str)
+    if !isnothing(m)
+        # .45
+        return true
+    end
+    m = match(r"^(\-|−?)(\d+)\.(\d*)r(\d+)$", str)
+    if !isnothing(m)
+        # 123.45r678, 123.r45
+        return true
+    end
+    m = match(r"^(\-|−?)(\d+)\.(\d*)r(\d+)$", str)
+    if !isnothing(m)
+        # 1.234r56, 1.r23
+        return true
+    end
+    m = match(r"^(\-|−?)\.(\d*)r(\d+)$", str)
+    if !isnothing(m)
+        # .234r56, .r123
+        return true
+    end
+    m = match(r"^(\-|−?)\.(\d*)r(\d+)e(-?\d)$", str)
+    if !isnothing(m)
+        # .234r56e2, .r56e2
+        return true
+    end
+    m = match(r"^(\-|−?)(\d+)\.(\d*)r(\d+)e(-?\d)$", str)
+    if !isnothing(m)
+        # 1.234r56e2, 1.r23e2
+        return true
+    end
+    return false
 end
 
 function stringify(::ScientificNotation, rd::RepeatingDecimal)
