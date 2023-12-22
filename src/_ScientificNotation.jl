@@ -24,10 +24,12 @@ function isvalidnotaiton(::ScientificNotation, _str::AbstractString)
     elseif !isnothing(match(r"^\.\d+r\d+$", str))
         # ".45r678"
         return true
-    elseif !isnothing(match(r"^\.r\d+$", str))
+    elseif !isnothing(match(r"^(\-|−?)\.r(\d+)$", _str))
         # ".r45"
         return true
-    elseif !isnothing(match(r"^(\-|−?)(\d+)\.(\d+)r(\d+)e(-?\d)$", _str))
+    elseif !isnothing(match(r"^(\-|−?)\.(\d+)r(\d+)e(-?\d)$", _str))
+        return true
+    elseif !isnothing(match(r"^(\-|−?)(\d+)\.(\d*)r(\d+)e(-?\d)$", _str))
         return true
     else
         return false
@@ -64,12 +66,13 @@ function RepeatingDecimal(::ScientificNotation, _str::AbstractString)
     else
         sign = true
     end
-    if !isnothing(match(r"^\d+$", str))
+    m = match(r"^(\-|−?)(\d+)$", _str)
+    if !isnothing(m)
         # "123"
-        integer_part = str
-        r_integer = parse(BigInt, integer_part)
-        return RepeatingDecimal(sign, r_integer, big(0), 0, 1)
-    elseif !isnothing(match(r"^\d+\.\d+$", str))
+        sign_str, integer_str = m.captures
+        return _repeating_decimal_from_strings(sign_str, integer_str, "", "0")
+    end
+    if !isnothing(match(r"^\d+\.\d+$", str))
         # "123.45"
         dot_index = findfirst(==('.'), str)
         integer_part = str[1:dot_index-1]
@@ -109,23 +112,44 @@ function RepeatingDecimal(::ScientificNotation, _str::AbstractString)
         r_finite = parse(BigInt, finite_part)
         r_repeating = parse(BigInt, repeating_part)
         return RepeatingDecimal(sign, r_finite, r_repeating, length(finite_part), length(repeating_part))
-    elseif !isnothing(match(r"^\.r\d+$", str))
-        # ".r45"
-        repeating_part = str[3:end]
-        r_repeating = parse(BigInt, repeating_part)
-        return RepeatingDecimal(sign, big(0), r_repeating, 0, length(repeating_part))
     end
-    m = match(r"^(\-|−?)(\d+)\.(\d+)r(\d+)e(-?\d)$", _str)
+    m = match(r"^(\-|−?)\.r(\d+)$", _str)
+    if !isnothing(m)
+        # .234r56
+        sign_str, repeat_str, = m.captures
+        return _repeating_decimal_from_strings(sign_str, "", "", repeat_str)
+    end
+    m = match(r"^(\-|−?)\.(\d+)r(\d+)e(-?\d)$", _str)
+    if !isnothing(m)
+        # .234r56e2
+        sign_str, decimal_str, repeat_str, exponet_str = m.captures
+        return _repeating_decimal_from_strings(sign_str, "", decimal_str, repeat_str, exponet_str)
+    end
+    m = match(r"^(\-|−?)(\d+)\.(\d*)r(\d+)e(-?\d)$", _str)
     if !isnothing(m)
         # 1.234r56e2
+        # 1.r23e2
         sign_str, integer_str, decimal_str, repeat_str, exponet_str = m.captures
-        period = length(repeat_str)
-        point_position = length(decimal_str)
-        r_finite = parse(BigInt, '0'*integer_str*decimal_str)
-        r_repeat = parse(BigInt, repeat_str)
-        sign = sign_str==""
-        rd = RepeatingDecimal(sign, r_finite, r_repeat, point_position, period)
-        return shift_decimal_point(rd, parse(Int, exponet_str))
+        return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, repeat_str, exponet_str)
     end
     error("invalid input!")
+end
+
+function _repeating_decimal_from_strings(sign_str::AbstractString, integer_str::AbstractString, decimal_str::AbstractString, repeat_str::AbstractString, exponet_str::AbstractString)
+    period = length(repeat_str)
+    point_position = length(decimal_str)
+    r_finite = parse(BigInt, '0'*integer_str*decimal_str)
+    r_repeat = parse(BigInt, repeat_str)
+    sign = sign_str==""
+    rd = RepeatingDecimal(sign, r_finite, r_repeat, point_position, period)
+    return shift_decimal_point(rd, parse(Int, exponet_str))
+end
+
+function _repeating_decimal_from_strings(sign_str::AbstractString, integer_str::AbstractString, decimal_str::AbstractString, repeat_str::AbstractString)
+    period = length(repeat_str)
+    point_position = length(decimal_str)
+    r_finite = parse(BigInt, '0'*integer_str*decimal_str)
+    r_repeat = parse(BigInt, repeat_str)
+    sign = sign_str==""
+    return RepeatingDecimal(sign, r_finite, r_repeat, point_position, period)
 end
