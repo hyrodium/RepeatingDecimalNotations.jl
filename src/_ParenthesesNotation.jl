@@ -2,34 +2,11 @@ struct ParenthesesNotation <: RepeatingDecimalNotation end
 
 function isvalidnotaiton(::ParenthesesNotation, str::AbstractString)
     str = _remove_underscore(str)
-    i = firstindex(str)
-    if str[i] == '-' || str[i] == '−'
-        str = str[nextind(str, i):end]
-    end
-    if !isnothing(match(r"^\d+$", str))
-        # "123"
-        return true
-    elseif !isnothing(match(r"^\d+\.\d+$", str))
-        # "123.45"
-        return true
-    elseif !isnothing(match(r"^\d+\.\d+\(\d+\)$", str))
-        # "123.45(678)"
-        return true
-    elseif !isnothing(match(r"^\d+\.\(\d+\)$", str))
-        # "123.(45)"
-        return true
-    elseif !isnothing(match(r"^\.\d+$", str))
-        # ".45"
-        return true
-    elseif !isnothing(match(r"^\.\d+\(\d+\)$", str))
-        # ".45(678)"
-        return true
-    elseif !isnothing(match(r"^\.\(\d+\)$", str))
-        # ".(45)"
-        return true
-    else
-        return false
-    end
+    isnothing(match(r"^(\-|−?)(\d+)\.?$", str))              || return true
+    isnothing(match(r"^(\-|−?)(\d*)\.(\d+)$", str))          || return true
+    isnothing(match(r"^(\-|−?)(\d+)\.(\d*)\((\d+)\)$", str)) || return true
+    isnothing(match(r"^(\-|−?)\.(\d*)\((\d+)\)$", str))      || return true
+    return false
 end
 
 function stringify(::ParenthesesNotation, rd::RepeatingDecimal)
@@ -54,65 +31,33 @@ end
 
 function RepeatingDecimal(::ParenthesesNotation, str::AbstractString)
     str = _remove_underscore(str)
-    i = firstindex(str)
-    local sign
-    if str[i] == '-' || str[i] == '−'
-        sign = false
-        str = str[nextind(str, i):end]
-    else
-        sign = true
+    m = match(r"^(\-|−?)(\d+)\.?$", str)
+    if !isnothing(m)
+        # 123
+        # 123.
+        sign_str, integer_str = m.captures
+        return _repeating_decimal_from_strings(sign_str, integer_str, "", "0")
     end
-    if !isnothing(match(r"^\d+$", str))
-        # "123"
-        integer_part = str
-        r_integer = parse(BigInt, integer_part)
-        return RepeatingDecimal(sign, r_integer, big(0), 0, 1)
-    elseif !isnothing(match(r"^\d+\.\d+$", str))
-        # "123.45"
-        dot_index = findfirst(==('.'), str)
-        integer_part = str[1:dot_index-1]
-        finite_part = str[dot_index+1:end]
-        r_finite = parse(BigInt, integer_part*finite_part)
-        return RepeatingDecimal(sign, r_finite, big(0), length(finite_part), 1)
-    elseif !isnothing(match(r"^\d+\.\d+\(\d+\)$", str))
-        # "123.45(678)"
-        dot_index = findfirst(==('.'), str)
-        left_index = findfirst(==('('), str)
-        integer_part = str[1:dot_index-1]
-        finite_part = str[dot_index+1:left_index-1]
-        repeating_part = str[left_index+1:end-1]
-        r_repeating = parse(BigInt, repeating_part)
-        r_finite = parse(BigInt, integer_part*finite_part)
-        return RepeatingDecimal(sign, r_finite, r_repeating, length(finite_part), length(repeating_part))
-    elseif !isnothing(match(r"^\d+\.\(\d+\)$", str))
-        # "123.(45)"
-        dot_index = findfirst(==('.'), str)
-        left_index = findfirst(==('('), str)
-        integer_part = str[1:dot_index-1]
-        repeating_part = str[left_index+1:end-1]
-        r_integer = parse(BigInt, integer_part)
-        r_repeating = parse(BigInt, repeating_part)
-        r_finite = r_integer
-        return RepeatingDecimal(sign, r_finite, r_repeating, 0, length(repeating_part))
-    elseif !isnothing(match(r"^\.\d+$", str))
-        # ".45"
-        finite_part = str[2:end]
-        r_finite = parse(BigInt, finite_part)
-        return RepeatingDecimal(sign, r_finite, big(0), length(finite_part), 1)
-    elseif !isnothing(match(r"^\.\d+\(\d+\)$", str))
-        # ".45(678)"
-        left_index = findfirst(==('('), str)
-        finite_part = str[2:left_index-1]
-        repeating_part = str[left_index+1:end-1]
-        r_finite = parse(BigInt, finite_part)
-        r_repeating = parse(BigInt, repeating_part)
-        return RepeatingDecimal(sign, r_finite, r_repeating, length(finite_part), length(repeating_part))
-    elseif !isnothing(match(r"^\.\(\d+\)$", str))
-        # ".(45)"
-        repeating_part = str[3:end-1]
-        r_repeating = parse(BigInt, repeating_part)
-        return RepeatingDecimal(sign, big(0), r_repeating, 0, length(repeating_part))
-    else
-        error("invalid input!")
+    m = match(r"^(\-|−?)(\d*)\.(\d+)$", str)
+    if !isnothing(m)
+        # 123.45
+        # .45
+        sign_str, integer_str, decimal_str = m.captures
+        return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, "0")
     end
+    m = match(r"^(\-|−?)(\d+)\.(\d*)\((\d+)\)$", str)
+    if !isnothing(m)
+        # 1.234(56)
+        # 1.(23)
+        sign_str, integer_str, decimal_str, repeat_str = m.captures
+        return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, repeat_str)
+    end
+    m = match(r"^(\-|−?)\.(\d*)\((\d+)\)$", str)
+    if !isnothing(m)
+        # .234(56)
+        # .(123)
+        sign_str, decimal_str, repeat_str = m.captures
+        return _repeating_decimal_from_strings(sign_str, "", decimal_str, repeat_str)
+    end
+    error("invalid input!")
 end
