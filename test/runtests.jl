@@ -127,7 +127,7 @@ end
         @test rationalify(RepeatingDecimal(no, ".234r56e2"))  == rd"23.4(56)"
         @test rationalify(RepeatingDecimal(no, ".r56e2"))     == rd"56.(56)"
         @test rationalify(RepeatingDecimal(no, "1.234r56e2")) == rd"123.4(56)"
-        @test rationalify(RepeatingDecimal(no, "1.r23e2"))    == rd"123.(23)"
+        @test rationalify(RepeatingDecimal(no, "1.r23e-2"))    == rd"0.0123(23)"
     end
 
     @testset "EllipsisNotation" begin
