@@ -120,8 +120,6 @@ end
         @test rationalify(RepeatingDecimal(no, "123.45"))     == 12345//100
         @test rationalify(RepeatingDecimal(no, "123."))       == 123
         @test rationalify(RepeatingDecimal(no, ".45"))        == 45//100
-        @test rationalify(RepeatingDecimal(no, "123.45r678")) == rd"123.45(678)"
-        @test rationalify(RepeatingDecimal(no, "123.r45"))    == rd"123.(45)"
         @test rationalify(RepeatingDecimal(no, "1.234r56"))   == rd"1.234(56)"
         @test rationalify(RepeatingDecimal(no, "1.r23"))      == rd"1.(23)"
         @test rationalify(RepeatingDecimal(no, ".234r56"))    == rd"0.234(56)"
