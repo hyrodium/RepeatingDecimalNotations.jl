@@ -35,6 +35,12 @@ function RepeatingDecimal(::ParenthesesNotation, str::AbstractString)
     if !isnothing(m)
         # 123
         # 123.
+        # +123
+        # +123.
+        # -123
+        # -123.
+        # −123
+        # −123.
         sign_str, integer_str = m.captures
         return _repeating_decimal_from_strings(sign_str, integer_str, "", "0")
     end
@@ -42,6 +48,12 @@ function RepeatingDecimal(::ParenthesesNotation, str::AbstractString)
     if !isnothing(m)
         # 123.45
         # .45
+        # +123.45
+        # +.45
+        # -123.45
+        # -.45
+        # −123.45
+        # −.45
         sign_str, integer_str, decimal_str = m.captures
         return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, "0")
     end
