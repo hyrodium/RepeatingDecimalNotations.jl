@@ -63,14 +63,14 @@ Generate `String` from `Rational` or `RepeatingDecimal` instance.
 ```jldoctest
 julia> using RepeatingDecimalNotations: stringify  # `stringify` is not exported.
 
-julia> stringify(ScientificNotation(), RepeatingDecimal(true, 123, 45, 2, 1))
-"1.23r45"
+julia> stringify(ScientificNotation(), RepeatingDecimal(true, 123, 45, 2, 3))
+"1.23r045"
 
 julia> stringify(EllipsisNotation(), 1//11)
 "0.0909..."
 
-julia> stringify(RepeatingDecimal(true, 123, 45, 2, 1))  # Defaults to `ParenthesesNotation()`.
-"1.23(45)"
+julia> stringify(RepeatingDecimal(true, 123, 45, 2, 3))  # Defaults to `ParenthesesNotation()`.
+"1.23(045)"
 
 julia> stringify(1//11)
 "0.(09)"
@@ -84,10 +84,48 @@ stringify(r::Union{Integer, Rational}) = stringify(RepeatingDecimal(r))
 stringify(rdn::RepeatingDecimalNotation, rd::RepeatingDecimal) = stringify(rdn, rd)
 stringify(rdn::RepeatingDecimalNotation, r::Union{Integer, Rational}) = stringify(rdn, RepeatingDecimal(r))
 
+"""
+    rationalify(::Type{<:Integer}, ::RepeatingDecimalNotation, ::AbstractString)
+    rationalify(::Type{<:Integer}, ::RepeatingDecimal)
+    rationalify(::Type{<:Integer}, ::AbstractString)
+    rationalify(::RepeatingDecimalNotation, ::AbstractString)
+    rationalify(::RepeatingDecimal)
+    rationalify(::AbstractString)
+
+Generate `String` from `Rational` or `RepeatingDecimal` instance.
+
+# Examples
+```jldoctest
+julia> using RepeatingDecimalNotations: rationalify  # `rationalify` is not exported.
+
+julia> rationalify(RepeatingDecimal(true, 123, 45, 2, 3))  # `RepeatingDecimal` to `Rational{Int}`
+6829//5550
+
+julia> rationalify("1.23r045")  # `String` to `Rational{Int}`
+6829//5550
+
+julia> rationalify(EllipsisNotation(), "1.23r045")  # If notation style is specified, the input string should follow the style.
+ERROR: invalid input!
+Stacktrace:
+[...]
+
+julia> rationalify(Int128, "1.23r045")  # `String` to `Rational{Int128}`
+6829//5550
+
+julia> typeof(ans)
+Rational{Int128}
+```
+"""
+rationalify
+
 # Defaults to `Int`
-rationalify(str::AbstractString) = rationalify(Int, ParenthesesNotation(), str)
+rationalify(str::AbstractString) = rationalify(Int, RepeatingDecimal(str))
 rationalify(rdn::RepeatingDecimalNotation, str::AbstractString) = rationalify(Int, rdn, str)
 rationalify(rd::RepeatingDecimal) = rationalify(Int, rd)
+function rationalify(T::Type{<:Integer}, str::AbstractString)
+    rd = RepeatingDecimal(str)
+    return rationalify(T, rd)
+end
 function rationalify(T::Type{<:Integer}, rdn::RepeatingDecimalNotation, str::AbstractString)
     rd = RepeatingDecimal(rdn, str)
     return rationalify(T, rd)
