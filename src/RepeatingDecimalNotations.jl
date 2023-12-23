@@ -51,6 +51,33 @@ macro rd_str(str)
     return _try_unpromote_type(r)
 end
 
+"""
+    stringify(::RepeatingDecimalNotation, ::RepeatingDecimal)
+    stringify(::RepeatingDecimalNotation, ::Rational)
+    stringify(::RepeatingDecimal)
+    stringify(::Rational)
+
+Generate `String` from `Rational` or `RepeatingDecimal` instance.
+
+# Examples
+```jldoctest
+julia> using RepeatingDecimalNotations: stringify  # `stringify` is not exported.
+
+julia> stringify(ScientificNotation(), RepeatingDecimal(true, 123, 45, 2, 1))
+"1.23r45"
+
+julia> stringify(EllipsisNotation(), 1//11)
+"0.0909..."
+
+julia> stringify(RepeatingDecimal(true, 123, 45, 2, 1))  # Defaults to `ParenthesesNotation()`.
+"1.23(45)"
+
+julia> stringify(1//11)
+"0.(09)"
+```
+"""
+stringify
+
 # Defaults to `ParenthesesNotation`
 stringify(rd::RepeatingDecimal) = stringify(ParenthesesNotation(), rd)
 stringify(r::Union{Integer, Rational}) = stringify(RepeatingDecimal(r))
