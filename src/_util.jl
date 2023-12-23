@@ -23,6 +23,6 @@ function _repeating_decimal_from_strings(sign_str::AbstractString, integer_str::
     point_position = length(decimal_str)
     r_finite = parse(BigInt, '0'*integer_str*decimal_str)
     r_repeat = parse(BigInt, repeat_str)
-    sign = sign_str==""
+    sign = sign_str in ("", "+")
     return RepeatingDecimal(sign, r_finite, r_repeat, point_position, period)
 end
