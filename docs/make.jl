@@ -4,7 +4,7 @@ using RepeatingDecimalNotations
 using InteractiveUtils
 
 # Setup for doctests in docstrings
-DocMeta.setdocmeta!(RepeatingDecimalNotations, :DocTestSetup, :(using RepeatingDecimalNotations))
+DocMeta.setdocmeta!(RepeatingDecimalNotations, :DocTestSetup, :(using RepeatingDecimalNotations; using RepeatingDecimalNotations: stringify, rationalify))
 
 makedocs(;
     modules = [RepeatingDecimalNotations],

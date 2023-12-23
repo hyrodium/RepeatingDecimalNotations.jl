@@ -2,6 +2,7 @@ using Test
 using Aqua
 using RepeatingDecimalNotations
 import RepeatingDecimalNotations: rationalify, stringify
+import RepeatingDecimalNotations: shift_decimal_point
 
 Aqua.test_all(RepeatingDecimalNotations)
 
@@ -28,8 +29,33 @@ Aqua.test_all(RepeatingDecimalNotations)
 end
 
 @testset "rationalify" begin
-    @test rationalify("1") === 1//1
-    @test rationalify("0.1(6)") === 1//6
+    for T in (Int, Int64, Int128, BigInt)
+        @test rationalify(T, ParenthesesNotation(), "0.123") == 123//1000
+        @test rationalify(T, RepeatingDecimal(1//7)) == 1//7
+        @test rationalify(T, "0.123") == 123//1000
+        @test rationalify(T, ParenthesesNotation(), "0.123") isa Rational{T}
+        @test rationalify(T, RepeatingDecimal(1//7)) isa Rational{T}
+        @test rationalify(T, "0.123") isa Rational{T}
+    end
+    @test rationalify(ParenthesesNotation(), "0.123") === 123//1000
+    @test rationalify(RepeatingDecimal(1//7)) === 1//7
+    @test rationalify("0.123") === 123//1000
+
+    @test rationalify("0.(09)") === 1//11
+    @test rationalify("0.r09") === 1//11
+    @test rationalify("0.0909...") === 1//11
+
+    @test rationalify(ParenthesesNotation(), "0.(09)") === 1//11
+    @test_throws ErrorException rationalify(ParenthesesNotation(), "0.r09")
+    @test_throws ErrorException rationalify(ParenthesesNotation(), "0.0909...")
+
+    @test_throws ErrorException rationalify(ScientificNotation(), "0.(09)")
+    @test rationalify(ScientificNotation(), "0.r09") === 1//11
+    @test_throws ErrorException rationalify(ScientificNotation(), "0.0909...")
+
+    @test_throws ErrorException rationalify(EllipsisNotation(), "0.(09)")
+    @test_throws ErrorException rationalify(EllipsisNotation(), "0.r09")
+    @test rationalify(EllipsisNotation(), "0.0909...") === 1//11
 end
 
 @testset "RepeatingDecimal" begin
