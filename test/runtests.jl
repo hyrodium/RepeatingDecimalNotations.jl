@@ -229,10 +229,18 @@ end
             @test_throws ErrorException RepeatingDecimal(no, "r12453")
         end
         @testset "exponent term" begin
-            @test rationalify(RepeatingDecimal(no, ".234r56e2"))  == rd"23.4(56)"
-            @test rationalify(RepeatingDecimal(no, ".r56e2"))     == rd"56.(56)"
-            @test rationalify(RepeatingDecimal(no, "1.234r56e2")) == rd"123.4(56)"
-            @test rationalify(RepeatingDecimal(no, "1.r23e-2"))   == rd"0.0123(23)"
+            @testset for str in [
+                ".234r56"
+                ".r56"
+                "1.234r56"
+                "1.r23"
+            ]
+                @testset for i in 0:5
+                    @test rationalify(RepeatingDecimal(no, "$(str)e$(i)"))  == rationalify(RepeatingDecimal(no, str)) * (10//1)^i
+                    @test rationalify(RepeatingDecimal(no, "$(str)e+$(i)"))  == rationalify(RepeatingDecimal(no, str)) * (10//1)^i
+                    @test rationalify(RepeatingDecimal(no, "$(str)e-$(i)"))  == rationalify(RepeatingDecimal(no, str)) * (1//10)^i
+                end
+            end
         end
     end
 
