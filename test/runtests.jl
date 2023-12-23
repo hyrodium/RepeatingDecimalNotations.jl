@@ -177,6 +177,19 @@ end
             @test rationalify(RepeatingDecimal(no, "0.(0)")) == 0
             @test rationalify(RepeatingDecimal(no, "0.(9)")) == 1
         end
+        @testset "invalid repeating decimal" begin
+            @test_throws ErrorException RepeatingDecimal(no, "123.4()")
+            @test_throws ErrorException RepeatingDecimal(no, "123.()")
+            @test_throws ErrorException RepeatingDecimal(no, "123..()")
+            @test_throws ErrorException RepeatingDecimal(no, "123.(4.5)")
+            @test_throws ErrorException RepeatingDecimal(no, "123(4.5)")
+            @test_throws ErrorException RepeatingDecimal(no, ".(4.5)")
+            @test_throws ErrorException RepeatingDecimal(no, ".(45)3")
+            @test_throws ErrorException RepeatingDecimal(no, "12.(453")
+            @test_throws ErrorException RepeatingDecimal(no, "12.453)")
+            @test_throws ErrorException RepeatingDecimal(no, "12(.)453")
+            @test_throws ErrorException RepeatingDecimal(no, "()12453")
+        end
     end
 
     @testset "ScientificNotation" begin
@@ -202,7 +215,19 @@ end
             @test rationalify(RepeatingDecimal(no, "0.r0")) == 0
             @test rationalify(RepeatingDecimal(no, "0.r9")) == 1
         end
-
+        @testset "invalid repeating decimal" begin
+            @test_throws ErrorException RepeatingDecimal(no, "123.4r")
+            @test_throws ErrorException RepeatingDecimal(no, "123.r")
+            @test_throws ErrorException RepeatingDecimal(no, "123..r")
+            @test_throws ErrorException RepeatingDecimal(no, "123.r4.5")
+            @test_throws ErrorException RepeatingDecimal(no, "123r4.5)")
+            @test_throws ErrorException RepeatingDecimal(no, ".r4.5")
+            @test_throws ErrorException RepeatingDecimal(no, ".r45r3")
+            @test_throws ErrorException RepeatingDecimal(no, "12.r_453")
+            @test_throws ErrorException RepeatingDecimal(no, "12.453r_")
+            @test_throws ErrorException RepeatingDecimal(no, "12r.453")
+            @test_throws ErrorException RepeatingDecimal(no, "r12453")
+        end
         @testset "exponent term" begin
             @test rationalify(RepeatingDecimal(no, ".234r56e2"))  == rd"23.4(56)"
             @test rationalify(RepeatingDecimal(no, ".r56e2"))     == rd"56.(56)"
@@ -233,6 +258,19 @@ end
             @test rationalify(RepeatingDecimal(no, "0.333...")) == 1//3
             @test rationalify(RepeatingDecimal(no, "0.000...")) == 0
             @test rationalify(RepeatingDecimal(no, "0.999...")) == 1
+        end
+        @testset "invalid repeating decimal" begin
+            @test_throws ErrorException RepeatingDecimal(no, "123.4...")
+            @test_throws ErrorException RepeatingDecimal(no, "123....")
+            @test_throws ErrorException RepeatingDecimal(no, "123...")
+            @test_throws ErrorException RepeatingDecimal(no, "123.44...5")
+            @test_throws ErrorException RepeatingDecimal(no, "123...4.5)")
+            @test_throws ErrorException RepeatingDecimal(no, "123.12345...")
+            @test_throws ErrorException RepeatingDecimal(no, ".4545...3")
+            @test_throws ErrorException RepeatingDecimal(no, "12.453.453...")
+            @test_throws ErrorException RepeatingDecimal(no, "12.453_...")
+            @test_throws ErrorException RepeatingDecimal(no, "12.453_453....")
+            @test_throws ErrorException RepeatingDecimal(no, "12.4.5353...")
         end
 
         @testset "float to rational" begin
