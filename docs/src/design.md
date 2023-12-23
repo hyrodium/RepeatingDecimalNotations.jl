@@ -93,7 +93,7 @@ rd"123.45r678"
 no = ScientificNotation()
 stringify(no, 1//11)
 rationalify(no, "123.45r678")
-rd"1.2345r678e2"  #　Exponent term is supported.
+rd"1.2345r678e2"  # Exponent term is supported.
 ```
 
 ### `EllipsisNotation`
