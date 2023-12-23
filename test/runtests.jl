@@ -239,6 +239,7 @@ end
                     @test rationalify(RepeatingDecimal(no, "$(str)e$(i)"))  == rationalify(RepeatingDecimal(no, str)) * (10//1)^i
                     @test rationalify(RepeatingDecimal(no, "$(str)e+$(i)"))  == rationalify(RepeatingDecimal(no, str)) * (10//1)^i
                     @test rationalify(RepeatingDecimal(no, "$(str)e-$(i)"))  == rationalify(RepeatingDecimal(no, str)) * (1//10)^i
+                    @test rationalify(RepeatingDecimal(no, "$(str)e−$(i)"))  == rationalify(RepeatingDecimal(no, str)) * (1//10)^i
                 end
             end
         end
