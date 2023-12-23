@@ -6,7 +6,6 @@ export RepeatingDecimalNotation
 export ParenthesesNotation
 export ScientificNotation
 export EllipsisNotation
-export shift_decimal_point
 
 """
 Abstract supertype for repeating decimals notations.

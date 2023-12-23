@@ -2,6 +2,7 @@ using Test
 using Aqua
 using RepeatingDecimalNotations
 import RepeatingDecimalNotations: rationalify, stringify
+import RepeatingDecimalNotations: shift_decimal_point
 
 Aqua.test_all(RepeatingDecimalNotations)
 
