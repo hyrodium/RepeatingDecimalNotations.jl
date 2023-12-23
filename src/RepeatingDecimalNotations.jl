@@ -8,6 +8,9 @@ export ScientificNotation
 export EllipsisNotation
 export shift_decimal_point
 
+"""
+Abstract supertype for repeating decimals notations.
+"""
 abstract type RepeatingDecimalNotation end
 
 include("_util.jl")
