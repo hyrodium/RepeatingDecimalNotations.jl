@@ -81,6 +81,8 @@ end
         @testset for no in (ParenthesesNotation(), ScientificNotation(), EllipsisNotation())
             @test stringify(no, RepeatingDecimal(rd"123"))   == "123"
             @test stringify(no, RepeatingDecimal(rd"123."))  == "123"
+            @test stringify(no, RepeatingDecimal(rd"+123"))  == "123"
+            @test stringify(no, RepeatingDecimal(rd"+123.")) == "123"
             @test stringify(no, RepeatingDecimal(rd"-123"))  == "-123"
             @test stringify(no, RepeatingDecimal(rd"-123.")) == "-123"
             @test stringify(no, RepeatingDecimal(rd"−123"))  == "-123"
@@ -88,6 +90,8 @@ end
 
             @test rationalify(RepeatingDecimal(no, "123"))   == 123//1
             @test rationalify(RepeatingDecimal(no, "123."))  == 123//1
+            @test rationalify(RepeatingDecimal(no, "+123"))  == 123//1
+            @test rationalify(RepeatingDecimal(no, "+123.")) == 123//1
             @test rationalify(RepeatingDecimal(no, "-123"))  == -123//1
             @test rationalify(RepeatingDecimal(no, "-123.")) == -123//1
             @test rationalify(RepeatingDecimal(no, "−123"))  == -123//1
@@ -99,6 +103,8 @@ end
         @testset for no in (ParenthesesNotation(), ScientificNotation(), EllipsisNotation())
             @test stringify(no, RepeatingDecimal(rd"123.45"))  == "123.45"
             @test stringify(no, RepeatingDecimal(rd".45"))     == "0.45"
+            @test stringify(no, RepeatingDecimal(rd"+123.45")) == "123.45"
+            @test stringify(no, RepeatingDecimal(rd"+.45"))    == "0.45"
             @test stringify(no, RepeatingDecimal(rd"-123.45")) == "-123.45"
             @test stringify(no, RepeatingDecimal(rd"-.45"))    == "-0.45"
             @test stringify(no, RepeatingDecimal(rd"−123.45")) == "-123.45"
@@ -106,10 +112,23 @@ end
 
             @test rationalify(RepeatingDecimal(no, "123.45"))  == 12345//100
             @test rationalify(RepeatingDecimal(no, ".45"))     == 45//100
+            @test rationalify(RepeatingDecimal(no, "+123.45")) == 12345//100
+            @test rationalify(RepeatingDecimal(no, "+.45"))    == 45//100
             @test rationalify(RepeatingDecimal(no, "-123.45")) == -12345//100
             @test rationalify(RepeatingDecimal(no, "-.45"))    == -45//100
             @test rationalify(RepeatingDecimal(no, "−123.45")) == -12345//100
             @test rationalify(RepeatingDecimal(no, "−.45"))    == -45//100
+        end
+    end
+
+    @testset "invalid non-repeating decimal" begin
+        @testset for no in (ParenthesesNotation(), ScientificNotation(), EllipsisNotation())
+            @test_throws ErrorException RepeatingDecimal(no, "123.4.5")
+            @test_throws ErrorException RepeatingDecimal(no, " 123")
+            @test_throws ErrorException RepeatingDecimal(no, "..45")
+            @test_throws ErrorException RepeatingDecimal(no, "-+123.45")
+            @test_throws ErrorException RepeatingDecimal(no, "-.")
+            @test_throws ErrorException RepeatingDecimal(no, "−−123.45")
         end
     end
 
