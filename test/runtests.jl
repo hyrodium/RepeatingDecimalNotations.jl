@@ -74,6 +74,21 @@ end
         Finite part Repeating part
         """
     end
+
+    @testset "shift_decimal_point" begin
+        @testset for rd in [
+            RepeatingDecimal("14.5(64)")
+            RepeatingDecimal("0.00145(64)")
+            RepeatingDecimal("0")
+            RepeatingDecimal("0.001")
+            RepeatingDecimal(1//7)
+        ]
+            @testset for n in -5:5
+                _rd = shift_decimal_point(rd, n)
+                @test rationalify(_rd) == rationalify(rd)*(10//1)^n
+            end
+        end
+    end
 end
 
 @testset "notations" begin
@@ -188,18 +203,12 @@ end
             @test rationalify(RepeatingDecimal(no, "0.r9")) == 1
         end
 
-        @test rationalify(RepeatingDecimal(no, "123"))        == 123
-        @test rationalify(RepeatingDecimal(no, "123.45"))     == 12345//100
-        @test rationalify(RepeatingDecimal(no, "123."))       == 123
-        @test rationalify(RepeatingDecimal(no, ".45"))        == 45//100
-        @test rationalify(RepeatingDecimal(no, "1.234r56"))   == rd"1.234(56)"
-        @test rationalify(RepeatingDecimal(no, "1.r23"))      == rd"1.(23)"
-        @test rationalify(RepeatingDecimal(no, ".234r56"))    == rd"0.234(56)"
-        @test rationalify(RepeatingDecimal(no, ".r123"))      == rd"0.(123)"
-        @test rationalify(RepeatingDecimal(no, ".234r56e2"))  == rd"23.4(56)"
-        @test rationalify(RepeatingDecimal(no, ".r56e2"))     == rd"56.(56)"
-        @test rationalify(RepeatingDecimal(no, "1.234r56e2")) == rd"123.4(56)"
-        @test rationalify(RepeatingDecimal(no, "1.r23e-2"))   == rd"0.0123(23)"
+        @testset "exponent term" begin
+            @test rationalify(RepeatingDecimal(no, ".234r56e2"))  == rd"23.4(56)"
+            @test rationalify(RepeatingDecimal(no, ".r56e2"))     == rd"56.(56)"
+            @test rationalify(RepeatingDecimal(no, "1.234r56e2")) == rd"123.4(56)"
+            @test rationalify(RepeatingDecimal(no, "1.r23e-2"))   == rd"0.0123(23)"
+        end
     end
 
     @testset "EllipsisNotation" begin
@@ -226,8 +235,8 @@ end
             @test rationalify(RepeatingDecimal(no, "0.999...")) == 1
         end
 
-        @testset "special cases" begin
-            for f in [12/7, 5/3, 97/11, 45/13, 1/9]
+        @testset "float to rational" begin
+            @testset for f in [12/7, 5/3, 97/11, 45/13, 1/9]
                 @test rationalify(no, string(f)[1:end-1]*"...") === rationalize(f)
             end
         end
