@@ -79,9 +79,9 @@ stringify
 
 # Defaults to `ParenthesesNotation`
 stringify(rd::RepeatingDecimal) = stringify(ParenthesesNotation(), rd)
-stringify(r::Union{Integer, Rational}) = stringify(RepeatingDecimal(r))
+stringify(r::Rational) = stringify(RepeatingDecimal(r))
 stringify(rdn::RepeatingDecimalNotation, rd::RepeatingDecimal) = stringify(rdn, rd)
-stringify(rdn::RepeatingDecimalNotation, r::Union{Integer, Rational}) = stringify(rdn, RepeatingDecimal(r))
+stringify(rdn::RepeatingDecimalNotation, r::Rational) = stringify(rdn, RepeatingDecimal(r))
 
 """
     rationalify(::Type{<:Integer}, ::RepeatingDecimalNotation, ::AbstractString)
