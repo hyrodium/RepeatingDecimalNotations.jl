@@ -28,7 +28,7 @@ RepeatingDecimal(true, 123456, 786, 3, 3)
 RepeatingDecimal(true, 123456_786_786, 786_786, 9, 6)
 ```
 
-## Converting functions: `stringify`, `rationalify`
+## Converting functions: [`stringify`](@ref RepeatingDecimalNotations.stringify), [`rationalify`](@ref RepeatingDecimalNotations.rationalify)
 
 ```mermaid
 graph LR
@@ -64,7 +64,7 @@ There are several supported notations for repeating decimals.
 subtypes(RepeatingDecimalNotation)
 ```
 
-### `ParenthesesNotation` (Default)
+### [`ParenthesesNotation`](@ref) (Default)
 ```math
 123.45(678)
 ```
@@ -83,7 +83,7 @@ rationalify(no, "123.45(678)")
 
 TODO: add support for `"123.456̇78̇"`
 
-### `ScientificNotation`
+### [`ScientificNotation`](@ref)
 ```math
 1.2345\text{r}678\text{e}2
 ```
@@ -96,7 +96,7 @@ rationalify(no, "123.45r678")
 rd"1.2345r678e2"  # Exponent term is supported.
 ```
 
-### `EllipsisNotation`
+### [`EllipsisNotation`](@ref)
 ```math
 123.45678678...
 ```
