@@ -130,8 +130,8 @@ function rationalify(T::Type{<:Integer}, rdn::RepeatingDecimalNotation, str::Abs
     return rationalify(T, rd)
 end
 function rationalify(T::Type{<:Integer}, rd::RepeatingDecimal)
-    r = rd.finite_part // (T(10)^rd.point_position)
-    r += rd.repeat_part // (T(10)^rd.period-1) / (T(10)^rd.point_position)
+    r = rd.finite_part // (big"10"^rd.point_position)
+    r += rd.repeat_part // (big"10"^rd.period-1) / (big"10"^rd.point_position)
     if rd.sign
         return Rational{T}(r)
     else
