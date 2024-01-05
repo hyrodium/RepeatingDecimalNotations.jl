@@ -75,19 +75,12 @@ function RepeatingDecimal(::ParenthesesNotation, str::AbstractString)
         sign_str, integer_str, decimal_str = m.captures
         return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, "0")
     end
-    m = match(r"^(\-|−|\+?)(\d+)\.(\d*)\((\d+)\)$", str)
+    m = match(r"^(\-|−|\+?)(\d*)\.(\d*)\((\d+)\)$", str)
     if !isnothing(m)
         # 1.234(56)
         # 1.(23)
         sign_str, integer_str, decimal_str, repeat_str = m.captures
         return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, repeat_str)
-    end
-    m = match(r"^(\-|−|\+?)\.(\d*)\((\d+)\)$", str)
-    if !isnothing(m)
-        # .234(56)
-        # .(123)
-        sign_str, decimal_str, repeat_str = m.captures
-        return _repeating_decimal_from_strings(sign_str, "", decimal_str, repeat_str)
     end
     error("invalid input!")
 end
