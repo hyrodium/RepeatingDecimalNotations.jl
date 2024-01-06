@@ -79,7 +79,7 @@ function RepeatingDecimal(::DotsNotation, str::AbstractString)
         sign_str, integer_str, decimal_str = m.captures
         return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, "0")
     end
-    # r"^(\-|−|\+?)(\d*)\.(\d*)(\d)⋅(\d+)⋅$"
+    # ⋅⇒\dot r"^(\-|−|\+?)(\d*)\.(\d*)(\d)⋅(\d+)⋅$"
     m = match(r"^(\-|−|\+?)(\d*)\.(\d*)(\d)̇(\d+)̇$", str)
     if !isnothing(m)
         # 1.2345̇6̇
@@ -87,7 +87,7 @@ function RepeatingDecimal(::DotsNotation, str::AbstractString)
         sign_str, integer_str, decimal_str, repeat_str1, repeat_str2 = m.captures
         return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, repeat_str1 * repeat_str2)
     end
-    # r"^(\-|−|\+?)(\d*)\.(\d*)(\d)⋅$"
+    # ⋅⇒\dot r"^(\-|−|\+?)(\d*)\.(\d*)(\d)⋅$"
     m = match(r"^(\-|−|\+?)(\d*)\.(\d*)(\d)̇$", str)
     if !isnothing(m)
         # 1.2345̇
