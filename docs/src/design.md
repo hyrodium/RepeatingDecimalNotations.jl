@@ -81,7 +81,19 @@ rationalify(no, "123.45(678)")
 123.45\dot{6}7\dot{8}
 ```
 
-TODO: add support for `"123.456̇78̇"`
+```@repl design
+rd"123.456̇78̇"
+no = DotsNotation()
+stringify(no, 1//11)
+rationalify(no, "123.456̇78̇")
+```
+
+Note that the above code block may not show `\dot (\u0307)` correctly.
+If you are using JuliaMono v0.053 or later, the characters will be rendered correctly like this[^juliamono196]:
+
+![](img/DotsNotationREPL.png)
+
+[^juliamono196]: See [JuliaMono issue#196](https://github.com/cormullion/juliamono/issues/196) for more information.
 
 ### [`ScientificNotation`](@ref)
 ```math
