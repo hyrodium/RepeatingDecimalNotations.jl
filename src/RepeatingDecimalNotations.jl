@@ -4,6 +4,7 @@ export @rd_str
 export RepeatingDecimal
 export RepeatingDecimalNotation
 export ParenthesesNotation
+export DotsNotation
 export ScientificNotation
 export EllipsisNotation
 

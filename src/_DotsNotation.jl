@@ -20,10 +20,10 @@ struct DotsNotation <: RepeatingDecimalNotation end
 
 function isvalidnotaiton(::DotsNotation, str::AbstractString)
     str = _remove_underscore(str)
-    isnothing(match(r"^(\-|−|\+?)(\d+)\.?$", str))              || return true
-    isnothing(match(r"^(\-|−|\+?)(\d*)\.(\d+)$", str))          || return true
-    isnothing(match(r"^(\-|−|\+?)(\d+)\.(\d*)\((\d+)\)$", str)) || return true
-    isnothing(match(r"^(\-|−|\+?)\.(\d*)\((\d+)\)$", str))      || return true
+    isnothing(match(r"^(\-|−|\+?)(\d+)\.?$", str))                || return true
+    isnothing(match(r"^(\-|−|\+?)(\d*)\.(\d+)$", str))            || return true
+    isnothing(match(r"^(\-|−|\+?)(\d*)\.(\d*)(\d)̇(\d+)̇$", str))   || return true
+    isnothing(match(r"^(\-|−|\+?)(\d*)\.(\d*)(\d)̇$", str))        || return true
     return false
 end
 
@@ -35,8 +35,12 @@ function stringify(::DotsNotation, rd::RepeatingDecimal)
     end
     if rd.period == 0
         rep_str = ""
+    elseif rd.period == 1
+        rep_str = "$(lpad(string(rd.repeat_part), rd.period, '0'))"
+        rep_str = rep_str * '\u0307'
     else
-        rep_str = "($(lpad(string(rd.repeat_part), rd.period, '0')))"
+        rep_str = "$(lpad(string(rd.repeat_part), rd.period, '0'))"
+        rep_str = rep_str[1] * '\u0307' * rep_str[2:end] * '\u0307'
     end
     decimal_part = "$finite_decimal_str$rep_str"
     sign_str = rd.sign ? "" : "-"
@@ -75,10 +79,19 @@ function RepeatingDecimal(::DotsNotation, str::AbstractString)
         sign_str, integer_str, decimal_str = m.captures
         return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, "0")
     end
-    m = match(r"^(\-|−|\+?)(\d*)\.(\d*)\((\d+)\)$", str)
+    # r"^(\-|−|\+?)(\d*)\.(\d*)(\d)⋅(\d+)⋅$"
+    m = match(r"^(\-|−|\+?)(\d*)\.(\d*)(\d)̇(\d+)̇$", str)
     if !isnothing(m)
         # 1.2345̇6̇
         # 1.2̇3̇
+        sign_str, integer_str, decimal_str, repeat_str1, repeat_str2 = m.captures
+        return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, repeat_str1 * repeat_str2)
+    end
+    # r"^(\-|−|\+?)(\d*)\.(\d*)(\d)⋅$"
+    m = match(r"^(\-|−|\+?)(\d*)\.(\d*)(\d)̇$", str)
+    if !isnothing(m)
+        # 1.2345̇
+        # 1.2̇
         sign_str, integer_str, decimal_str, repeat_str = m.captures
         return _repeating_decimal_from_strings(sign_str, integer_str, decimal_str, repeat_str)
     end
