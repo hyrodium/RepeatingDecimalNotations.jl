@@ -58,13 +58,20 @@ r == rationalify(str) == rationalify(rd)
 ```
 
 ## Subtypes of `RepeatingDecimalNotation`
-There are several supported notations for repeating decimals.
+There are several supported notations[^Notations] for repeating decimals.
 
 ```@repl design
 subtypes(RepeatingDecimalNotation)
 ```
 
+[^Notations]: Please check [Notaion section](https://en.wikipedia.org/wiki/Repeating_decimal#Notation) in the wikipedia article
+
 ### [`ParenthesesNotation`](@ref) (Default)
+
+* 😊 Common notations in some regions.
+* 😆 Easy to input.
+* 😇 May conflict with Julia syntax[^Conflict].
+
 ```math
 123.45(678)
 ```
@@ -76,7 +83,14 @@ stringify(no, 1//11)
 rationalify(no, "123.45(678)")
 ```
 
+[^Conflict]: Try `123.45(678) == 83699.1` on Julia REPL.
+
 ### `DotsNotation`
+
+* 😊 Common notations in some regions.
+* 😁 Does not break digit positions.
+* 😂 Requires more typings `\dot[TAB]` and correct font enfironment.
+
 ```math
 123.45\dot{6}7\dot{8}
 ```
@@ -89,13 +103,19 @@ rationalify(no, "123.456̇78̇")
 ```
 
 Note that the above code block may not show `\dot (\u0307)` correctly.
-If you are using JuliaMono v0.053 or later, the characters will be rendered correctly like this[^juliamono196]:
+If you are using JuliaMono v0.053 or later, the characters will be rendered correctly like this[^JuliaMono196]:
 
 ![](img/DotsNotationREPL.png)
 
-[^juliamono196]: See [JuliaMono issue#196](https://github.com/cormullion/juliamono/issues/196) for more information.
+[^JuliaMono196]: See [JuliaMono issue#196](https://github.com/cormullion/juliamono/issues/196) for more information.
 
 ### [`ScientificNotation`](@ref)
+
+* 😉 Easy to combine with exponential notation.
+* 🥲 Not much common notation[^r_notation].
+
+[^r_notation]: See [hsjoihs's tweet](https://twitter.com/hsjoihs/status/1740719888828944773) and [the best way to count (YouTube)](https://www.youtube.com/watch?v=rDDaEVcwIJM&t=2610s) for example usages.
+
 ```math
 1.2345\text{r}678\text{e}2
 ```
@@ -109,6 +129,10 @@ rd"1.2345r678e2"  # Exponent term is supported.
 ```
 
 ### [`EllipsisNotation`](@ref)
+
+* 🤩 You don't have to specify the repeating decimal part.
+* 😝 Sometimes repeating part will be long and hard to read.
+
 ```math
 123.45678678...
 ```
