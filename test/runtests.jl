@@ -254,6 +254,49 @@ end
         end
     end
 
+    @testset "DotsNotation" begin
+        no = DotsNotation()
+        @testset "basic repeating decimal" begin
+            @test stringify(no, RepeatingDecimal(rd"123.45(678)")) == "123.456̇78̇"
+            @test stringify(no, RepeatingDecimal(rd"123.(45)"))    == "123.4̇5̇"
+            @test stringify(no, RepeatingDecimal(rd".45(678)"))    == "0.456̇78̇"
+            @test stringify(no, RepeatingDecimal(rd".(45)"))       == "0.4̇5̇"
+            @test rationalify(RepeatingDecimal(no, "123.456̇78̇")) == rd"123.45(678)"
+            @test rationalify(RepeatingDecimal(no, "123.4̇5̇"))    == rd"123.(45)"
+            @test rationalify(RepeatingDecimal(no, ".456̇78̇"))    == rd".45(678)"
+            @test rationalify(RepeatingDecimal(no, ".4̇5̇"))       == rd".(45)"
+        end
+        @testset "one-digit-repeating" begin
+            @test stringify(no, 1//3) == "0.3̇"
+            @test stringify(no, 0//1) == "0"
+            @test stringify(no, 1//1) == "1"
+            @test rationalify(RepeatingDecimal(no, ".3̇")) == 1//3
+            @test rationalify(RepeatingDecimal(no, ".0̇")) == 0
+            @test rationalify(RepeatingDecimal(no, ".9̇")) == 1
+            @test rationalify(RepeatingDecimal(no, "0.3̇")) == 1//3
+            @test rationalify(RepeatingDecimal(no, "0.0̇")) == 0
+            @test rationalify(RepeatingDecimal(no, "0.9̇")) == 1
+        end
+        @testset "invalid repeating decimal" begin
+            @testset for str in [
+                "123.4̇3"
+                "123.̇"
+                "123..̇"
+                "123.4̇.5"
+                "1234̇.5)"
+                ".4̇.5"
+                ".4̇5̇3̇"
+                "12._4̇53̇"
+                "12.453̇_"
+                "12̇.453"
+                "1̇2453̇"
+            ]
+                @test_throws ErrorException RepeatingDecimal(str)
+                @test_throws ErrorException RepeatingDecimal(no, str)
+            end
+        end
+    end
+
     @testset "ScientificNotation" begin
         no = ScientificNotation()
         @testset "basic repeating decimal" begin
