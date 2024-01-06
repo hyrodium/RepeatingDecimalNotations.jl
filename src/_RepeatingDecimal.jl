@@ -118,7 +118,7 @@ function RepeatingDecimal(r::Rational)
 end
 
 function RepeatingDecimal(str::AbstractString)
-    for no in (ParenthesesNotation(), ScientificNotation(), EllipsisNotation())
+    for no in (ParenthesesNotation(), DotsNotation(), ScientificNotation(), EllipsisNotation())
         if isvalidnotaiton(no, str)
             return RepeatingDecimal(no, str)
         end

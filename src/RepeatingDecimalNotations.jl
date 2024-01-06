@@ -4,6 +4,7 @@ export @rd_str
 export RepeatingDecimal
 export RepeatingDecimalNotation
 export ParenthesesNotation
+export DotsNotation
 export ScientificNotation
 export EllipsisNotation
 
@@ -15,6 +16,7 @@ abstract type RepeatingDecimalNotation end
 include("_util.jl")
 include("_RepeatingDecimal.jl")
 include("_ParenthesesNotation.jl")
+include("_DotsNotation.jl")
 include("_ScientificNotation.jl")
 include("_EllipsisNotation.jl")
 
