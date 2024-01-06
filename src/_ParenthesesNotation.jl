@@ -22,8 +22,7 @@ function isvalidnotaiton(::ParenthesesNotation, str::AbstractString)
     str = _remove_underscore(str)
     isnothing(match(r"^(\-|−|\+?)(\d+)\.?$", str))              || return true
     isnothing(match(r"^(\-|−|\+?)(\d*)\.(\d+)$", str))          || return true
-    isnothing(match(r"^(\-|−|\+?)(\d+)\.(\d*)\((\d+)\)$", str)) || return true
-    isnothing(match(r"^(\-|−|\+?)\.(\d*)\((\d+)\)$", str))      || return true
+    isnothing(match(r"^(\-|−|\+?)(\d*)\.(\d*)\((\d+)\)$", str)) || return true
     return false
 end
 
