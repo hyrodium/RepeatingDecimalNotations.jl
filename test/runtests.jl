@@ -42,18 +42,27 @@ end
     @test rationalify("0.123") === 123//1000
 
     @test rationalify("0.(09)") === 1//11
+    @test rationalify("0.0̇9̇") === 1//11
     @test rationalify("0.r09") === 1//11
     @test rationalify("0.0909...") === 1//11
 
     @test rationalify(ParenthesesNotation(), "0.(09)") === 1//11
+    @test_throws ErrorException rationalify(ParenthesesNotation(), "0.0̇9̇")
     @test_throws ErrorException rationalify(ParenthesesNotation(), "0.r09")
     @test_throws ErrorException rationalify(ParenthesesNotation(), "0.0909...")
 
+    @test_throws ErrorException rationalify(DotsNotation(), "0.(09)")
+    @test rationalify(DotsNotation(), "0.0̇9̇") === 1//11
+    @test_throws ErrorException rationalify(DotsNotation(), "0.r09")
+    @test_throws ErrorException rationalify(DotsNotation(), "0.0909...")
+
     @test_throws ErrorException rationalify(ScientificNotation(), "0.(09)")
+    @test_throws ErrorException rationalify(ScientificNotation(), "0.0̇9̇")
     @test rationalify(ScientificNotation(), "0.r09") === 1//11
     @test_throws ErrorException rationalify(ScientificNotation(), "0.0909...")
 
     @test_throws ErrorException rationalify(EllipsisNotation(), "0.(09)")
+    @test_throws ErrorException rationalify(EllipsisNotation(), "0.0̇9̇")
     @test_throws ErrorException rationalify(EllipsisNotation(), "0.r09")
     @test rationalify(EllipsisNotation(), "0.0909...") === 1//11
 end
@@ -143,7 +152,7 @@ end
 
 @testset "notations" begin
     @testset "integer" begin
-        @testset for no in (ParenthesesNotation(), ScientificNotation(), EllipsisNotation())
+        @testset for no in (ParenthesesNotation(), DotsNotation(), ScientificNotation(), EllipsisNotation())
             @test stringify(no, RepeatingDecimal(rd"123"))   == "123"
             @test stringify(no, RepeatingDecimal(rd"123."))  == "123"
             @test stringify(no, RepeatingDecimal(rd"+123"))  == "123"
@@ -165,7 +174,7 @@ end
     end
 
     @testset "non-repeating decimal" begin
-        @testset for no in (ParenthesesNotation(), ScientificNotation(), EllipsisNotation())
+        @testset for no in (ParenthesesNotation(), DotsNotation(), ScientificNotation(), EllipsisNotation())
             @test stringify(no, RepeatingDecimal(rd"123.45"))  == "123.45"
             @test stringify(no, RepeatingDecimal(rd".45"))     == "0.45"
             @test stringify(no, RepeatingDecimal(rd"+123.45")) == "123.45"
@@ -187,7 +196,7 @@ end
     end
 
     @testset "invalid non-repeating decimal" begin
-        @testset for no in (ParenthesesNotation(), ScientificNotation(), EllipsisNotation())
+        @testset for no in (ParenthesesNotation(), DotsNotation(), ScientificNotation(), EllipsisNotation())
             @testset "invalid repeating decimal" begin
                 @testset for str in [
                     "123.4.5"
@@ -425,6 +434,18 @@ end
         @test rd".(45)"  === 5//11
         @test rd"0.(45)" === 5//11
         @test rd".45(6)" === 137//300
+    end
+
+    @testset "DotsNotation" begin
+        @test rd"0.99̇" === 1//1
+        @test rd"1.0̇"  === 1//1
+        @test rd"0.3̇"  === 1//3
+        @test rd".3̇"   === 1//3
+        @test rd".6̇6̇"  === 2//3
+        @test rd"-.0̇9̇" === -1//11
+        @test rd".4̇5̇"  === 5//11
+        @test rd"0.4̇5̇" === 5//11
+        @test rd".456̇" === 137//300
     end
 
     @testset "ScientificNotation" begin
