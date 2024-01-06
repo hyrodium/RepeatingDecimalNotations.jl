@@ -89,7 +89,7 @@ rationalify(no, "123.45(678)")
 
 * 😊 Common notations in some regions.
 * 😁 Does not break digit positions.
-* 😂 Requires more typings `\dot[TAB]` and correct font enfironment.
+* 😂 Requires more typings `\dot[TAB]` and correct font environment.
 
 ```math
 123.45\dot{6}7\dot{8}
@@ -103,7 +103,7 @@ rationalify(no, "123.456̇78̇")
 ```
 
 Note that the above code block may not show `\dot (\u0307)` correctly.
-If you are using JuliaMono v0.053 or later, the characters will be rendered correctly like this[^JuliaMono196]:
+If you are using [JuliaMono v0.053](https://github.com/cormullion/juliamono/releases/tag/v0.053) or later, the characters will be rendered correctly like this[^JuliaMono196]:
 
 ![](img/DotsNotationREPL.png)
 
