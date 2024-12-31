@@ -1,6 +1,6 @@
 function _remove_underscore(str::AbstractString)
-    str = replace(str, r"(\d)_(\d)" => s"\1\2")
-    str = replace(str, r"(\d)_(\d)" => s"\1\2")
+    str = replace(str, r"([0-9])_([0-9])" => s"\1\2")
+    str = replace(str, r"([0-9])_([0-9])" => s"\1\2")
     return str
 end
 
