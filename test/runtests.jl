@@ -197,25 +197,24 @@ end
 
     @testset "invalid non-repeating decimal" begin
         @testset for no in (ParenthesesNotation(), DotsNotation(), ScientificNotation(), EllipsisNotation())
-            @testset "invalid repeating decimal" begin
-                @testset for str in [
-                    "123.4.5"
-                    "++1235"
-                    "12__3"
-                    "1_2_3_"
-                    "_1_2_3"
-                    "1_2._3"
-                    "1_2_.3"
-                    " 123"
-                    " 123 "
-                    "..45"
-                    "-+123.45"
-                    "-."
-                    "−−123.45"
-                ]
-                    @test_throws ErrorException RepeatingDecimal(str)
-                    @test_throws ErrorException RepeatingDecimal(no, str)
-                end
+            @testset for str in [
+                "123.4.5"
+                "++1235"
+                "12__3"
+                "1_2_3_"
+                "_1_2_3"
+                "1_2._3"
+                "1_2_.3"
+                " 123"
+                " 123 "
+                "..45"
+                "-+123.45"
+                "-."
+                "−−123.45"
+                "４２"
+            ]
+                @test_throws ErrorException RepeatingDecimal(str)
+                @test_throws ErrorException RepeatingDecimal(no, str)
             end
         end
     end
@@ -256,6 +255,7 @@ end
                 "12.453)"
                 "12(.)453"
                 "()12453"
+                "４２.(４２)"
             ]
                 @test_throws ErrorException RepeatingDecimal(str)
                 @test_throws ErrorException RepeatingDecimal(no, str)
@@ -299,6 +299,7 @@ end
                 "12.453̇_"
                 "12̇.453"
                 "1̇2453̇"
+                "４２.4̇4̇"
             ]
                 @test_throws ErrorException RepeatingDecimal(str)
                 @test_throws ErrorException RepeatingDecimal(no, str)
@@ -343,6 +344,7 @@ end
                 "12.453r_"
                 "12r.453"
                 "r12453"
+                "４２.r42"
             ]
                 @test_throws ErrorException RepeatingDecimal(str)
                 @test_throws ErrorException RepeatingDecimal(no, str)
@@ -405,6 +407,7 @@ end
                 "12.453_..."
                 "12.453_453...."
                 "12.4.5353..."
+                "４２.4242..."
             ]
                 @test_throws ErrorException RepeatingDecimal(str)
                 @test_throws ErrorException RepeatingDecimal(no, str)
