@@ -8,6 +8,11 @@ export DotsNotation
 export ScientificNotation
 export EllipsisNotation
 
+if VERSION >= v"1.11.0-DEV.469"
+    eval(Meta.parse("public stringify"))
+    eval(Meta.parse("public rationalify"))
+end
+
 """
 Abstract supertype for repeating decimals notations.
 """
